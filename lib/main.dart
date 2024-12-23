@@ -10,7 +10,7 @@ class TrullaApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Trulla',
       theme: ThemeData.dark(),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
