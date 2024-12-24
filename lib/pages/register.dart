@@ -71,10 +71,15 @@ class SignUpPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
+                 const SizedBox(height: 16),
                 _buildTextField(
-                  icon: Icons.person_outline,
-                  hint: 'Masukkan username',
+                  icon: Icons.person,
+                  hint: 'Masukkan Nama',
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  icon: Icons.email,
+                  hint: 'Masukkan email',
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
