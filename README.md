@@ -1,4 +1,4 @@
-# trulla
+# trula
 
 A new Flutter project.
 

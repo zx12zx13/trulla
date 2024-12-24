@@ -13,6 +13,16 @@ class _ProfilePageState extends State<ProfilePage> {
   late final TextEditingController _passwordController;
   late final TextEditingController _confirmPasswordController;
 
+  // Add state variables for password visibility
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
+
+  final Color primaryColor = Color(0xFF2196F3);
+  final Color backgroundColor = Color(0xFF1A1E2D);
+  final Color surfaceColor = Color(0xFF242938);
+  final Color textColor = Color(0xFFFFFFFF);
+  final Color secondaryTextColor = Color(0xFFB0BEC5);
+
   @override
   void initState() {
     super.initState();
@@ -36,69 +46,107 @@ class _ProfilePageState extends State<ProfilePage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: const Color(0xFF1A1E2D),
+        backgroundColor: backgroundColor,
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Profil',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                        color: textColor,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.settings, color: Colors.white),
-                      onPressed: () {},
+                    Container(
+                      decoration: BoxDecoration(
+                        color: surfaceColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.settings, color: textColor),
+                        onPressed: () {},
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey[800],
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.white,
-                    ),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: surfaceColor,
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                          color: primaryColor,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.edit, color: textColor, size: 20),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 32),
-                _buildTextField(context, '', Icons.person, _nameController),
-                const SizedBox(height: 16),
-                _buildTextField(context, '', Icons.email, _emailController),
-                const SizedBox(height: 16),
-                _buildTextField(context, '', Icons.lock, _passwordController,
-                    isPassword: true),
-                const SizedBox(height: 16),
+                const SizedBox(height: 40),
                 _buildTextField(
-                    context, '', Icons.lock_outline, _confirmPasswordController,
-                    isPassword: true),
-                const SizedBox(height: 24),
+                    context, 'Nama Lengkap', Icons.person, _nameController),
+                const SizedBox(height: 20),
+                _buildTextField(
+                    context, 'Email', Icons.email, _emailController),
+                const SizedBox(height: 20),
+                _buildTextField(
+                    context, 'Password', Icons.lock, _passwordController,
+                    isPassword: true,
+                    isPasswordVisible: _passwordVisible, onTogglePassword: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                }),
+                const SizedBox(height: 20),
+                _buildTextField(context, 'Konfirmasi Password',
+                    Icons.lock_outline, _confirmPasswordController,
+                    isPassword: true,
+                    isPasswordVisible: _confirmPasswordVisible,
+                    onTogglePassword: () {
+                  setState(() {
+                    _confirmPasswordVisible = !_confirmPasswordVisible;
+                  });
+                }),
+                const SizedBox(height: 40),
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: 56,
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2196F3),
+                      backgroundColor: primaryColor,
+                      elevation: 2,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      'Simpan',
+                    child: Text(
+                      'Simpan Perubahan',
                       style: TextStyle(
-                        fontSize: 16,
+                        color: textColor,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -112,34 +160,65 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildTextField(BuildContext context, String label, IconData icon,
-      TextEditingController controller,
-      {bool isPassword = false}) {
-    return Focus(
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF242938),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white),
-          obscureText: isPassword,
-          keyboardType:
-              isPassword ? TextInputType.visiblePassword : TextInputType.text,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.white),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
+  Widget _buildTextField(
+    BuildContext context,
+    String label,
+    IconData icon,
+    TextEditingController controller, {
+    bool isPassword = false,
+    bool isPasswordVisible = false,
+    VoidCallback? onTogglePassword,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: secondaryTextColor,
+              fontSize: 14,
             ),
           ),
         ),
-      ),
+        Container(
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: primaryColor.withOpacity(0.1),
+            ),
+          ),
+          child: TextField(
+            controller: controller,
+            style: TextStyle(color: textColor),
+            obscureText: isPassword && !isPasswordVisible,
+            decoration: InputDecoration(
+              prefixIcon: Icon(icon, color: primaryColor),
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: secondaryTextColor,
+                      ),
+                      onPressed: onTogglePassword,
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

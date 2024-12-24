@@ -27,59 +27,73 @@ class LoginPage extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 40),
-                Text(
-                  'Selamat Datang\nKembali',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Masuk untuk melanjutkan',
-                  style: TextStyle(
-                    color: secondaryTextColor,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 48),
-                _buildTextField(
-                  icon: Icons.person_outline,
-                  label: 'Username',
-                  hint: 'Masukkan username anda',
-                ),
-                const SizedBox(height: 24),
-                _buildTextField(
-                  icon: Icons.lock_outline,
-                  label: 'Password',
-                  hint: 'Masukkan password',
-                  isPassword: true,
-                ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Lupa Password?',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.apps_rounded,
+                                color: primaryColor, size: 24),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Trulla',
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 40),
+                      Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Isi form di bawah untuk melakukan login.',
+                        style: TextStyle(
+                          color: secondaryTextColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 32),
+                _buildTextField(
+                  icon: Icons.person_outline,
+                  hint: 'Masukkan username',
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  icon: Icons.lock_outline,
+                  hint: 'Masukkan Password',
+                  isPassword: true,
+                ),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: textColor,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(double.infinity, 54),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     elevation: 4,
                   ),
@@ -98,40 +112,8 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    Expanded(child: Divider(color: secondaryTextColor)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Atau masuk dengan',
-                        style: TextStyle(color: secondaryTextColor),
-                      ),
-                    ),
-                    Expanded(child: Divider(color: secondaryTextColor)),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                _buildGoogleButton(),
-                const SizedBox(height: 32),
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Belum punya akun? ',
-                      style: TextStyle(color: secondaryTextColor),
-                      children: [
-                        TextSpan(
-                          text: 'Daftar',
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 24),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -142,70 +124,28 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildTextField({
     required IconData icon,
-    required String label,
     required String hint,
     bool isPassword = false,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        obscureText: isPassword,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: secondaryTextColor),
+          hintText: hint,
+          hintStyle: TextStyle(color: secondaryTextColor),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
           ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: surfaceColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: primaryColor.withOpacity(0.2)),
-          ),
-          child: TextField(
-            obscureText: isPassword,
-            style: TextStyle(color: textColor),
-            decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: secondaryTextColor),
-              suffixIcon: isPassword
-                  ? Icon(Icons.visibility_off, color: secondaryTextColor)
-                  : null,
-              hintText: hint,
-              hintStyle: TextStyle(color: secondaryTextColor),
-              border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGoogleButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.red),
-        label: Text(
-          'Masuk dengan Google',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: textColor,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: surfaceColor,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: secondaryTextColor.withOpacity(0.2)),
-          ),
-        ),
-        onPressed: () {},
       ),
     );
   }

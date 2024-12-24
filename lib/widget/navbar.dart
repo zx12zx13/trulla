@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 import '../pages/profile.dart';
-import '../pages/show-team.dart';
+import '../pages/list-team.dart';
 import '../pages/tag-page.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 
@@ -18,7 +18,7 @@ class _NavBarControllerState extends State<NavBarController> {
   final List<Widget> _pages = [
     const HomePage(),
     const TagPage(),
-    const ShowTeamPage(),
+    const ListTeamPage(),
     const ProfilePage(),
   ];
 
@@ -66,7 +66,7 @@ class CustomNavBar extends StatelessWidget {
           ),
         ),
         Text(
-          "Tag",
+          "Project",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white70,
