@@ -1,4 +1,4 @@
-# flutter_application_1
+# trulla
 
 A new Flutter project.
 
