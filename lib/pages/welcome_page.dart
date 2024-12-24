@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import 'register.dart';
 
 class WelcomePage extends StatelessWidget {
   final Color primaryColor = const Color(0xFF2196F3);
@@ -8,11 +9,48 @@ class WelcomePage extends StatelessWidget {
   final Color textColor = const Color(0xFFFFFFFF);
 
   final List<TagItem> tags = [
-    const TagItem('Belanja', Color(0xFFFF9800), left: 20, top: 100),
-    const TagItem('Ulang Tahun', Color(0xFF4CAF50), right: 20, top: 130),
-    const TagItem('Meeting', Color(0xFFFFC107), left: 70, top: 180),
-    const TagItem('Daftar Tugas', Color(0xFFFF5252), right: 50, top: 220),
-    const TagItem('Liburan', Color(0xFF2196F3), left: 40, top: 250),
+    const TagItem(
+      'Belanja',
+      Color(0xFFFF9800),
+      left: 40,
+      top: 135,
+      rotate: -0.3,
+      width: 150,
+      height: 40,
+    ),
+    const TagItem(
+      'Ulang Tahun',
+      Color(0xFF4CAF50),
+      right: 100,
+      top: 145,
+      rotate: 0.4,
+      width: 150,
+      height: 40,
+    ),
+    const TagItem(
+      'Meeting',
+      Color(0xFFFFC107),
+      left: 130,
+      top: 180,
+      width: 150,
+      height: 40,
+    ),
+    const TagItem(
+      'Daftar Tugas',
+      Color(0xFFFF5252),
+      right: 90,
+      top: 240,
+      width: 150,
+      height: 40,
+    ),
+    const TagItem(
+      'Liburan',
+      Color(0xFF2196F3),
+      left: 80,
+      top: 290,
+      width: 150,
+      height: 40,
+    ),
   ];
 
   WelcomePage({super.key});
@@ -29,8 +67,7 @@ class WelcomePage extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: surfaceColor,
                     borderRadius: BorderRadius.circular(15),
@@ -84,29 +121,26 @@ class WelcomePage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 40),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
+                      backgroundColor: Colors.white,
                       elevation: 4,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     ),
-                    onPressed: () {
-                      Navigator.pushReplacement(
+                    onPressed: () {Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    },
+                      );},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.login_rounded, color: textColor, size: 24),
+                        Icon(Icons.login_rounded, color: Colors.black, size: 24),
                         const SizedBox(width: 12),
                         Text(
                           'Masuk',
                           style: TextStyle(
-                            color: textColor,
+                            color: Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -116,14 +150,36 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Daftar Sekarang',
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: backgroundColor,
+                      side: BorderSide(color: Colors.white, width: 2),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    ),
+                    onPressed: () {Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      );},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.app_registration, color: Colors.white, size: 24),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Daftar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -134,7 +190,10 @@ class WelcomePage extends StatelessWidget {
                 left: tag.left,
                 right: tag.right,
                 top: tag.top,
-                child: tag,
+                child: Transform.rotate(
+                  angle: tag.rotate,
+                  child: tag,
+                ),
               )),
         ],
       ),
@@ -148,14 +207,27 @@ class TagItem extends StatelessWidget {
   final double? left;
   final double? right;
   final double? top;
+  final double rotate;
+  final double? width;
+  final double? height;
 
-  const TagItem(this.text, this.color,
-      {this.left, this.right, this.top, Key? key})
-      : super(key: key);
+  const TagItem(
+    this.text,
+    this.color, {
+    this.left,
+    this.right,
+    this.top,
+    this.rotate = 0.0,
+    this.width,
+    this.height,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width != null && width! > 0 ? width : null,
+      height: height != null && height! > 0 ? height : null,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: color.withOpacity(0.9),
@@ -168,12 +240,15 @@ class TagItem extends StatelessWidget {
           ),
         ],
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
         ),
       ),
     );

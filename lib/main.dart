@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Trulla',
       theme: ThemeData.dark(),
-      home: LoginPage(),
+      home: WelcomePage(),
     );
   }
 }

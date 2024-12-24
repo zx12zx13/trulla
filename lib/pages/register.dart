@@ -1,161 +1,117 @@
 import 'package:flutter/material.dart';
+import 'welcome_page.dart';
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  final Color primaryColor = const Color(0xFF2196F3);
+  final Color backgroundColor = const Color(0xFF1A1E2D);
+  final Color surfaceColor = const Color(0xFF242938);
+  final Color textColor = const Color(0xFFFFFFFF);
+  final Color secondaryTextColor = const Color(0xFFB0BEC5);
+
+  SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                // Header dengan ikon back dan logo
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black54,
-                              offset: Offset(0, 2),
-                              blurRadius: 6)
-                        ],
-                      ),
-                      child: const Text(
-                        'Trulla',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios, color: textColor),
+                  onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 40),
-                // Judul Halaman
-                const Text(
-                  'Buat Akun',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Isi form di bawah untuk membuat akun.',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.apps_rounded, color: primaryColor, size: 24),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Trulla',
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      Text(
+                        'Daftar',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Isi form di bawah untuk melakukan pendaftaran akun.',
+                        style: TextStyle(
+                          color: secondaryTextColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 30),
-                // Input Field Username
-                const InputField(
-                  hintText: 'Masukkan username',
-                  icon: Icons.person,
-                  isPassword: false,
+                const SizedBox(height: 32),
+                _buildTextField(
+                  icon: Icons.person_outline,
+                  hint: 'Masukkan username',
                 ),
-                const SizedBox(height: 20),
-                // Input Field Password
-                const InputField(
-                  hintText: 'Masukkan Password',
-                  icon: Icons.lock,
+                const SizedBox(height: 16),
+                _buildTextField(
+                  icon: Icons.lock_outline,
+                  hint: 'Masukkan Password',
                   isPassword: true,
+                  
                 ),
-                const SizedBox(height: 40),
-                // Tombol Daftar
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(double.infinity, 54),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {},
-                    child: const Text(
-                      'Daftar',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    elevation: 4,
+                  ),
+                  onPressed: () { 
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => WelcomePage()),
+                    );
+                  },
+                  child: const Text(
+                    'Masuk',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                // Garis Pembatas ATAU
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Divider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    )),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'ATAU',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                        child: Divider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    )),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // Tombol Daftar dengan Google
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.white),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {},
-                    icon: const Icon(Icons.g_translate, color: Colors.white),
-                    label: const Text(
-                      'Daftar dengan Google',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -163,37 +119,29 @@ class SignUpPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class InputField extends StatelessWidget {
-  final String hintText;
-  final IconData icon;
-  final bool isPassword;
-
-  const InputField({
-    Key? key,
-    required this.hintText,
-    required this.icon,
-    this.isPassword = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      obscureText: isPassword,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
-        filled: true,
-        fillColor: Colors.grey[800],
-        prefixIcon: Icon(icon, color: Colors.grey),
-        suffixIcon: isPassword
-            ? const Icon(Icons.visibility, color: Colors.grey)
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+  Widget _buildTextField({
+    required IconData icon,
+    required String hint,
+    bool isPassword = false,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TextField(
+        obscureText: isPassword,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: secondaryTextColor),
+          hintText: hint,
+          hintStyle: TextStyle(color: secondaryTextColor),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
     );
