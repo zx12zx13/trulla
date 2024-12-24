@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
-import 'welcome_page.dart';
-void main() => runApp(TrullaApp());
+import 'widget/navbar.dart';
+import 'pages/welcome_page.dart';
 
-class TrullaApp extends StatelessWidget {
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Trulla',
-      theme: ThemeData.dark(),
-      home: LoginPage(),
+      theme: ThemeData(
+        primaryColor: const Color(0xFF2196F3),
+        scaffoldBackgroundColor: const Color(0xFF1A1E2D),
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => WelcomePage(),
+        '/home': (context) => const NavBarController(),
+      },
     );
   }
 }

@@ -1,21 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignUpPage(),
-    );
-  }
-}
-
 class SignUpPage extends StatelessWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
@@ -48,7 +32,7 @@ class SignUpPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                               color: Colors.black54,
                               offset: Offset(0, 2),
@@ -123,9 +107,9 @@ class SignUpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 // Garis Pembatas ATAU
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Expanded(
                         child: Divider(
                       color: Colors.grey,
