@@ -1,0 +1,1 @@
+ C:\\project\ flutter\\trula\\.dart_tool\\flutter_build\\304e365bf5353c0a2ad0a6ce6e7f9c7f\\native_assets.yaml: 
