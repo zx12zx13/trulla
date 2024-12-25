@@ -1,4 +1,4 @@
-#Tue Dec 24 15:37:50 SGT 2024
+#Thu Dec 26 00:54:24 SGT 2024
 base.0=C\:\\project flutter\\trula\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\project flutter\\trula\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\project flutter\\trula\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
