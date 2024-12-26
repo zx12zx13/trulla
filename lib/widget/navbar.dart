@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../pages/home_page.dart';
-import '../pages/profile.dart';
-import '../pages/list-team.dart';
-import '../pages/tag-page.dart';
+import '../pages/homepage/home_page.dart';
+import '../pages/profile/profile.dart';
+import '../pages/group/view-group-team.dart';
+import '../pages/project/project-page.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 
 class NavBarController extends StatefulWidget {
@@ -17,7 +17,7 @@ class _NavBarControllerState extends State<NavBarController> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const TagPage(),
+    const ProjectPage(),
     const ListTeamPage(),
     const ProfilePage(),
   ];
