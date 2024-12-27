@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class ProjectNotePage extends StatefulWidget {
@@ -67,7 +69,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
                   colors: [primaryColor, accentColor],
                 ).createShader(bounds),
                 child: Text(
-                  'Catatan Project',
+                  'Project Note',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 20,
@@ -122,7 +124,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Tulis Catatan',
+                  'Writing Notes',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 16,
@@ -150,7 +152,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
                   ),
                   maxLines: null,
                   decoration: InputDecoration(
-                    hintText: 'Tulis catatan disini...',
+                    hintText: 'Write a note here...',
                     hintStyle: TextStyle(
                       color: textColor.withOpacity(0.3),
                     ),
@@ -208,7 +210,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
                     elevation: 0,
                   ),
                   child: const Text(
-                    'Simpan',
+                    'Save',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -242,7 +244,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
                 child: Row(
                   children: [
                     const Text(
-                      'Buat dengan AI',
+                      'Create With AI',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -282,7 +284,7 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Opsi AI',
+            'AI Option',
             style: TextStyle(
               color: textColor,
               fontSize: 14,
@@ -292,14 +294,14 @@ class _ProjectNotePageState extends State<ProjectNotePage> {
           const SizedBox(height: 12),
           _buildAIOption(
             icon: Icons.auto_awesome,
-            title: 'Buat Ringkasan',
-            subtitle: 'Ringkas catatan menjadi poin-poin penting',
+            title: 'Create a Summary',
+            subtitle: 'Summarize notes into key points',
           ),
           const SizedBox(height: 12),
           _buildAIOption(
             icon: Icons.translate,
-            title: 'Terjemahkan',
-            subtitle: 'Terjemahkan catatan ke bahasa lain',
+            title: 'Translate',
+            subtitle: 'Translate notes to other languages',
           ),
         ],
       ),

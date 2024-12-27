@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'project-detail.dart';
 import '../notification/notification.dart';
@@ -303,7 +305,7 @@ class _ProjectPageState extends State<ProjectPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Aktifitas',
+                  'Activities',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -347,7 +349,7 @@ class _ProjectPageState extends State<ProjectPage>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Atur dan kelola project dengan mudah',
+                        'Easily organize and manage projects',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 14,
@@ -594,7 +596,7 @@ class _ProjectPageState extends State<ProjectPage>
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                '$daysRemaining hari',
+                                '$daysRemaining Days',
                                 style: TextStyle(
                                   color: isUrgent
                                       ? const Color(0xFFFF5252)

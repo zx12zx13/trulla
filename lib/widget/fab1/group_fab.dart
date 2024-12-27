@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class GroupFAB extends StatelessWidget {
@@ -26,14 +28,14 @@ class GroupFAB extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF242938),
         title: const Text(
-          'Buat Grup Baru',
+          'Create a New Group',
           style: TextStyle(color: Colors.white),
         ),
         content: TextField(
           controller: nameController,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: 'Nama Grup',
+            hintText: 'Name of Group',
             hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
@@ -43,7 +45,8 @@ class GroupFAB extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal', style: TextStyle(color: Colors.white70)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white70)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -55,7 +58,7 @@ class GroupFAB extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2196F3),
             ),
-            child: const Text('Simpan'),
+            child: const Text('Save'),
           ),
         ],
       ),

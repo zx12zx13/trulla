@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class EditProfilePage extends StatelessWidget {
@@ -5,10 +7,10 @@ class EditProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color(0xFF4E6AF3);
-    final backgroundColor = const Color(0xFF1A1E2D);
-    final surfaceColor = const Color(0xFF242938);
-    final accentColor = const Color(0xFF6C63FF);
+    const primaryColor = Color(0xFF4E6AF3);
+    const backgroundColor = Color(0xFF1A1E2D);
+    const surfaceColor = Color(0xFF242938);
+    const accentColor = Color(0xFF6C63FF);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -23,7 +25,7 @@ class EditProfilePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
+                      shaderCallback: (bounds) => const LinearGradient(
                         colors: [primaryColor, accentColor],
                       ).createShader(bounds),
                       child: const Text(
@@ -57,18 +59,18 @@ class EditProfilePage extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
                             colors: [primaryColor, accentColor],
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
                           child: CircleAvatar(
                             radius: 60,
                             backgroundColor: surfaceColor,
-                            child: const Icon(
+                            child: Icon(
                               Icons.person,
                               size: 60,
                               color: Colors.white,
@@ -80,16 +82,16 @@ class EditProfilePage extends StatelessWidget {
                         bottom: 0,
                         right: 0,
                         child: Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
                               colors: [primaryColor, accentColor],
                             ),
                           ),
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             radius: 20,
                             backgroundColor: primaryColor,
-                            child: const Icon(
+                            child: Icon(
                               Icons.camera_alt,
                               size: 20,
                               color: Colors.white,
@@ -131,7 +133,7 @@ class EditProfilePage extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [primaryColor, accentColor],
                     ),
                     borderRadius: BorderRadius.circular(12),

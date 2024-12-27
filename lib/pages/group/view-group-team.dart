@@ -1,6 +1,7 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'show-team.dart';
-import '../notification/notification.dart';
 import '../../widget/fab1/group_fab.dart';
 import '../../widget/fab1/project_fab.dart';
 
@@ -32,7 +33,7 @@ class _ListTeamPageState extends State<ListTeamPage>
   final List<Map<String, dynamic>> myTeams = [
     {
       'name': 'UI/UX Design Team',
-      'type': 'Publik',
+      'type': 'Public',
       'color': const Color(0xFF2196F3),
       'memberCount': 5,
       'projectCount': 3,
@@ -55,7 +56,7 @@ class _ListTeamPageState extends State<ListTeamPage>
     },
     {
       'name': 'Frontend Team',
-      'type': 'Publik',
+      'type': 'Public',
       'color': Colors.green,
       'memberCount': 8,
       'projectCount': 4,
@@ -75,7 +76,7 @@ class _ListTeamPageState extends State<ListTeamPage>
   final List<Map<String, dynamic>> joinedTeams = [
     {
       'name': 'Backend Team',
-      'type': 'Publik',
+      'type': 'Public',
       'color': Colors.orange,
       'memberCount': 12,
       'projectCount': 6,
@@ -294,7 +295,7 @@ class _ListTeamPageState extends State<ListTeamPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Grup',
+                  'Group',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 16,
@@ -338,7 +339,7 @@ class _ListTeamPageState extends State<ListTeamPage>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Kelola tim dan kolaborasi dengan mudah',
+                        'Manage teams and collaboration easily',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 14,
@@ -499,7 +500,7 @@ class _ListTeamPageState extends State<ListTeamPage>
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                '${team['memberCount']} Anggota',
+                                '${team['memberCount']} Member',
                                 style: TextStyle(
                                   color: team['color'],
                                   fontSize: 13,
@@ -531,7 +532,7 @@ class _ListTeamPageState extends State<ListTeamPage>
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                '${team['projectCount']} Proyek',
+                                '${team['projectCount']} Project',
                                 style: TextStyle(
                                   color: team['color'],
                                   fontSize: 13,
@@ -560,7 +561,7 @@ class _ListTeamPageState extends State<ListTeamPage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Project Terkini',
+                              'Current Projects',
                               style: TextStyle(
                                 color: textColor.withOpacity(0.9),
                                 fontSize: 14,

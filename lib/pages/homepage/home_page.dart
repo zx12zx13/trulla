@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import '../quotes/quotes.dart';
 import '../notification/notification.dart';
 import '../../widget/fab1/group_fab.dart';
@@ -83,20 +85,20 @@ class _HomePageState extends State<HomePage>
     {
       'type': 'deadline',
       'title': 'Deadline Project',
-      'description': 'Pengumpulan project akan berakhir dalam 3 hari',
+      'description': 'Project collection will end in 3 days',
       'date': '21 Nov 2024',
       'daysRemaining': 3,
     },
     {
       'type': 'invitation',
-      'title': 'Undangan Tim Baru',
-      'description': 'Anda diundang untuk bergabung dengan tim "UI/UX Design"',
+      'title': 'New Team Invitation',
+      'description': 'You are invited to join the “UI/UX Design” team',
       'team': 'UI/UX Design',
     },
     {
       'type': 'deadline',
       'title': 'Deadline Project',
-      'description': 'Review code harus selesai minggu ini',
+      'description': 'Code review must be completed this week',
       'date': '21 Nov 2024',
       'daysRemaining': 5,
     }
@@ -188,13 +190,13 @@ class _HomePageState extends State<HomePage>
     String greeting;
 
     if (hour < 12) {
-      greeting = 'Selamat Pagi';
+      greeting = 'Good Morning';
     } else if (hour < 15) {
-      greeting = 'Selamat Siang';
+      greeting = 'Good Afternoon';
     } else if (hour < 18) {
-      greeting = 'Selamat Sore';
+      greeting = 'Good Evening';
     } else {
-      greeting = 'Selamat Malam';
+      greeting = 'Good Night';
     }
 
     return Container(
@@ -234,7 +236,7 @@ class _HomePageState extends State<HomePage>
           Row(
             children: [
               Text(
-                'Andre',
+                'Marino',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.9),
                   fontSize: 18,
@@ -277,7 +279,7 @@ class _HomePageState extends State<HomePage>
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Mari selesaikan tugas hari ini!',
+                  'Lets complete todays task!',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 14,
@@ -300,10 +302,10 @@ class _HomePageState extends State<HomePage>
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         children: [
-          _buildTab('Semua', 0, Icons.grid_view_rounded),
-          _buildTab('Sedang Berjalan', 1, Icons.timer_outlined),
-          _buildTab('Selesai', 2, Icons.check_circle_outline_rounded),
-          _buildTab('Dibatalkan', 3, Icons.cancel_outlined),
+          _buildTab('All', 0, Icons.grid_view_rounded),
+          _buildTab('On Going', 1, Icons.timer_outlined),
+          _buildTab('Completed', 2, Icons.check_circle_outline_rounded),
+          _buildTab('Canceled', 3, Icons.cancel_outlined),
         ],
       ),
     );
@@ -675,7 +677,7 @@ class _HomePageState extends State<HomePage>
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            '$daysUntilDeadline hari',
+                            '$daysUntilDeadline Days',
                             style: TextStyle(
                               color: isNearDeadline
                                   ? const Color(0xFFFF5252)

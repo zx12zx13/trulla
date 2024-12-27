@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class ProjectFAB extends StatelessWidget {
@@ -39,7 +41,7 @@ class ProjectFAB extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF242938),
         title: const Text(
-          'Tambah Proyek Baru',
+          'Add a New Project',
           style: TextStyle(color: Colors.white),
         ),
         content: StatefulBuilder(
@@ -52,7 +54,7 @@ class ProjectFAB extends StatelessWidget {
                   controller: nameController,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: 'Nama Proyek',
+                    hintText: 'Name of Project',
                     hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                     enabledBorder: UnderlineInputBorder(
                       borderSide:
@@ -66,7 +68,7 @@ class ProjectFAB extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Deskripsi Proyek',
+                    hintText: 'Description',
                     hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                     enabledBorder: UnderlineInputBorder(
                       borderSide:
@@ -114,7 +116,7 @@ class ProjectFAB extends StatelessWidget {
                       onChanged: (value) =>
                           setState(() => visibility = value.toString()),
                     ),
-                    const Text('Pribadi',
+                    const Text('Private',
                         style: TextStyle(color: Colors.white)),
                     Radio(
                       value: 'public',
@@ -122,7 +124,7 @@ class ProjectFAB extends StatelessWidget {
                       onChanged: (value) =>
                           setState(() => visibility = value.toString()),
                     ),
-                    const Text('Publik', style: TextStyle(color: Colors.white)),
+                    const Text('Public', style: TextStyle(color: Colors.white)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -155,7 +157,8 @@ class ProjectFAB extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal', style: TextStyle(color: Colors.white70)),
+            child:
+                const Text('Cancel', style: TextStyle(color: Colors.white70)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -168,7 +171,7 @@ class ProjectFAB extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2196F3),
             ),
-            child: const Text('Simpan'),
+            child: const Text('Save'),
           ),
         ],
       ),

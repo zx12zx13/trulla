@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
@@ -11,7 +13,7 @@ class WelcomePage extends StatelessWidget {
 
   final List<TagItem> tags = [
     const TagItem(
-      'Belanja',
+      'Shopping',
       Color(0xFFFF6B6B),
       left: 40,
       top: 180,
@@ -21,7 +23,7 @@ class WelcomePage extends StatelessWidget {
       isAnimated: true,
     ),
     const TagItem(
-      'Ulang Tahun',
+      'Birthday',
       Color(0xFF4ECDC4),
       right: 30,
       top: 190,
@@ -40,7 +42,7 @@ class WelcomePage extends StatelessWidget {
       isAnimated: true,
     ),
     const TagItem(
-      'Daftar Tugas',
+      'List Jobdesk',
       Color(0xFFFF006E),
       right: 70,
       top: 290,
@@ -49,7 +51,7 @@ class WelcomePage extends StatelessWidget {
       isAnimated: true,
     ),
     const TagItem(
-      'Liburan',
+      'Holiday',
       Color(0xFF8338EC),
       left: 60,
       top: 340,
@@ -131,7 +133,7 @@ class WelcomePage extends StatelessWidget {
                     colors: [primaryColor, accentColor],
                   ).createShader(bounds),
                   child: Text(
-                    'Dengan Trulla',
+                    'With Trulla',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -142,7 +144,7 @@ class WelcomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  'Atur Tugas dan Kegiatanmu\ndengan Mudah',
+                  'Organize Your Tasks and Activities\nEasily ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -170,7 +172,8 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()),
                       );
                     },
                     child: Row(
@@ -190,7 +193,7 @@ class WelcomePage extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         const Text(
-                          'Masuk',
+                          'Login',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,

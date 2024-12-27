@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'edit_profile_page.dart';
 import '../opening/welcome_page.dart';
@@ -60,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage>
               Icon(Icons.check_circle, color: Colors.white),
               SizedBox(width: 12),
               Text(
-                'Berhasil keluar dari aplikasi',
+                'Successfully exit the application',
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -113,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage>
                               colors: [primaryColor, accentColor],
                             ).createShader(bounds),
                             child: const Text(
-                              'Profil',
+                              'Profile',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -215,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Sedang keluar...',
+                      'On your way out...',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -323,35 +325,35 @@ class _ProfilePageState extends State<ProfilePage>
                   style: TextStyle(color: Colors.white),
                 ),
                 content: const Text(
-                  'Apakah anda yakin ingin keluar?',
+                  'Are you sure you want to quit?',
                   style: TextStyle(color: Colors.white),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Batal'),
+                    child: const Text('Cancel'),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       _handleLogout();
                     },
-                    child: const Text('Keluar'),
+                    child: const Text('Logout'),
                   ),
                 ],
               ),
             );
           },
           borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.logout, color: Colors.white),
                 SizedBox(width: 8),
                 Text(
-                  'Keluar',
+                  'Logout',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

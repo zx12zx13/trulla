@@ -1,13 +1,15 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 
 class MotivationalQuotes {
   static final List<String> quotes = [
-    "Sukses adalah hasil dari persiapan, kerja keras, dan belajar dari kegagalan.",
-    "Jangan takut gagal. Ketakutan membuat kita tidak berani mencoba.",
-    "Kesuksesan dimulai dengan mimpi yang berani.",
-    "Setiap langkah kecil membawa kita lebih dekat ke tujuan.",
-    "Masa depan adalah milik mereka yang percaya pada keindahan mimpi mereka.",
+    "Success is the result of preparation, hard work, and learning from failure.",
+    "Don't be afraid of failure. Fear keeps us from trying.",
+    "You can fail but you can't fail your kidneys",
+    "Every small step brings us closer to our goal.",
+    "The future belongs to those who believe in the beauty of their dreams.",
   ];
 
   static String getRandomQuote() {

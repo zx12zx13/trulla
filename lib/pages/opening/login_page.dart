@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'welcome_page.dart';
 import 'register.dart';
@@ -87,17 +89,17 @@ class _LoginPageState extends State<LoginPage>
 
   bool _validateInputs() {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showNotification('Email dan Password harus diisi', false);
+      _showNotification('Email and Password must be filled in', false);
       return false;
     }
 
     if (!_emailController.text.contains('@')) {
-      _showNotification('Email tidak valid', false);
+      _showNotification('Invalid email', false);
       return false;
     }
 
     if (_passwordController.text.length < 6) {
-      _showNotification('Password minimal 6 karakter', false);
+      _showNotification('Password at least 6 characters', false);
       return false;
     }
 
@@ -118,7 +120,7 @@ class _LoginPageState extends State<LoginPage>
 
         // For demo, login is successful if email contains "test"
         if (_emailController.text.contains('test')) {
-          _showNotification('Login berhasil!', true);
+          _showNotification('Login successful!', true);
           await Future.delayed(const Duration(seconds: 1));
 
           if (mounted) {
@@ -128,7 +130,7 @@ class _LoginPageState extends State<LoginPage>
             );
           }
         } else {
-          _showNotification('Email atau password salah', false);
+          _showNotification('Incorrect email or password', false);
         }
       } finally {
         if (mounted) {
@@ -280,7 +282,7 @@ class _LoginPageState extends State<LoginPage>
             colors: [primaryColor, accentColor],
           ).createShader(bounds),
           child: Text(
-            'Selamat Datang',
+            'Welcome',
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
@@ -291,7 +293,7 @@ class _LoginPageState extends State<LoginPage>
         ),
         const SizedBox(height: 12),
         Text(
-          'Masuk untuk melanjutkan',
+          'Login to Continue',
           style: TextStyle(
             color: secondaryTextColor,
             fontSize: 16,
@@ -313,7 +315,6 @@ class _LoginPageState extends State<LoginPage>
         ),
         const SizedBox(height: 20),
         _buildAnimatedPasswordField(),
-        _buildForgotPassword(),
         const SizedBox(height: 30),
         _buildLoginButton(),
         const SizedBox(height: 16),
@@ -330,7 +331,7 @@ class _LoginPageState extends State<LoginPage>
   }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -381,7 +382,7 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildAnimatedPasswordField() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -445,29 +446,10 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
-  Widget _buildForgotPassword() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          _showNotification('Fitur reset password belum tersedia', false);
-        },
-        child: Text(
-          'Lupa Password?',
-          style: TextStyle(
-            color: primaryColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLoginButton() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -501,8 +483,8 @@ class _LoginPageState extends State<LoginPage>
               ),
               onPressed: _isLoading ? null : _handleLogin,
               child: Text(
-                _isLoading ? 'Loading...' : 'Masuk',
-                style: TextStyle(
+                _isLoading ? 'Loading...' : 'Login',
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1,
@@ -518,7 +500,7 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildRegisterButton() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -544,11 +526,12 @@ class _LoginPageState extends State<LoginPage>
                   : () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SignUpPage()),
                       );
                     },
               child: const Text(
-                'Daftar',
+                'Register',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

@@ -1,4 +1,6 @@
 // signup_page.dart
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'notification_widget.dart';
@@ -89,17 +91,17 @@ class _SignUpPageState extends State<SignUpPage>
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty) {
-      _showNotification('Semua field harus diisi', false);
+      _showNotification('All fields must be filled', false);
       return false;
     }
 
     if (!_emailController.text.contains('@')) {
-      _showNotification('Email tidak valid', false);
+      _showNotification('Invalid email', false);
       return false;
     }
 
     if (_passwordController.text.length < 6) {
-      _showNotification('Password minimal 6 karakter', false);
+      _showNotification('Password at least 6 characters', false);
       return false;
     }
 
@@ -136,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage>
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         });
       });
@@ -213,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage>
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         },
       ),
@@ -266,7 +268,7 @@ class _SignUpPageState extends State<SignUpPage>
             colors: [primaryColor, accentColor],
           ).createShader(bounds),
           child: Text(
-            'Buat Akun Baru',
+            'Create a New Account',
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
@@ -277,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage>
         ),
         const SizedBox(height: 12),
         Text(
-          'Daftar untuk mengatur jadwalmu',
+          'Register to Organize Your Schedule',
           style: TextStyle(
             color: secondaryTextColor,
             fontSize: 16,
@@ -293,7 +295,7 @@ class _SignUpPageState extends State<SignUpPage>
       children: [
         _buildAnimatedTextField(
           icon: Icons.person_outline_rounded,
-          hint: 'Nama Lengkap',
+          hint: 'Username',
           delay: 200,
           controller: _nameController,
         ),
@@ -329,7 +331,7 @@ class _SignUpPageState extends State<SignUpPage>
   }) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -397,7 +399,7 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildSignUpButton() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -431,7 +433,7 @@ class _SignUpPageState extends State<SignUpPage>
               ),
               onPressed: _handleSignUp,
               child: const Text(
-                'Daftar',
+                'Register',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -448,14 +450,14 @@ class _SignUpPageState extends State<SignUpPage>
   Widget _buildTermsAndConditions() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
           child: Center(
             child: Text(
-              'Dengan mendaftar, kamu menyetujui\nSyarat & Ketentuan dan Kebijakan Privasi kami',
+              'By signing up, you agree to\nOur Terms & Conditions and Privacy Policy',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: secondaryTextColor,

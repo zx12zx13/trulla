@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'group-project-detail.dart';
 
@@ -51,6 +53,11 @@ class ShowTeamPage extends StatefulWidget {
 
 class _ShowTeamPageState extends State<ShowTeamPage>
     with SingleTickerProviderStateMixin {
+  bool isTeamMembersExpanded = true;
+  bool isPendingMembersExpanded = true;
+  bool isThisWeekExpanded = true;
+  bool isLastMonthExpanded = true;
+
   bool isProjectTab = true;
   late Map<String, dynamic> teamData;
   late AnimationController _animationController;
@@ -63,6 +70,23 @@ class _ShowTeamPageState extends State<ShowTeamPage>
   final Color accentColor = const Color(0xFF6C63FF);
   final Color textColor = const Color(0xFFFFFFFF);
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
+
+  void _handleRejectMember(TeamMember member) {
+    setState(() {
+      pendingMembers.removeWhere((m) => m.id == member.id);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${member.name} telah ditolak'),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
 
   // Functions for team management
   void _handleEditTeamName(String newName) {
@@ -120,7 +144,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
         id: member.id,
         name: member.name,
         email: member.email,
-        role: 'Anggota',
+        role: 'Member',
         avatarColor: member.avatarColor,
       ));
     });
@@ -150,21 +174,21 @@ class _ShowTeamPageState extends State<ShowTeamPage>
       id: '2',
       name: 'Sarah',
       email: 'sarah@mail.com',
-      role: 'Project Manager',
+      role: 'Member',
       avatarColor: const Color(0xFFFF5252),
     ),
     TeamMember(
       id: '3',
       name: 'Michael',
       email: 'michael@mail.com',
-      role: 'Developer',
+      role: 'Member',
       avatarColor: const Color(0xFF4CAF50),
     ),
     TeamMember(
       id: '4',
       name: 'Emily',
       email: 'emily@mail.com',
-      role: 'Designer',
+      role: 'Member',
       avatarColor: const Color(0xFFFFA726),
     ),
   ];
@@ -455,7 +479,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
                           ),
                         ),
                         child: Text(
-                          teamData['type'] ?? 'Publik',
+                          teamData['type'] ?? 'Public',
                           style: TextStyle(
                             color: teamData['color'] ?? primaryColor,
                             fontSize: 14,
@@ -475,7 +499,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
                 _buildTeamStat(
                   Icons.people_outline_rounded,
                   '${teamData['memberCount'] ?? 3}/10',
-                  'Anggota',
+                  'Member',
                 ),
                 _buildTeamStat(
                   Icons.folder_open_rounded,
@@ -550,7 +574,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
         children: [
           _buildTab(Icons.folder_rounded, 'Project', true),
           const SizedBox(width: 12),
-          _buildTab(Icons.people_rounded, 'Anggota', false),
+          _buildTab(Icons.people_rounded, 'Member', false),
         ],
       ),
     );
@@ -648,56 +672,84 @@ class _ShowTeamPageState extends State<ShowTeamPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildProjectSection('Minggu Ini', thisWeekProjects),
+          _buildProjectSection('This week', thisWeekProjects),
           const SizedBox(height: 20),
-          _buildProjectSection('Bulan Lalu', lastMonthProjects),
+          _buildProjectSection('Last Month', lastMonthProjects),
         ],
       ),
     );
   }
 
   Widget _buildProjectSection(String title, List<Project> projects) {
+    final isExpanded =
+        title == 'This week' ? isThisWeekExpanded : isLastMonthExpanded;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: secondaryTextColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: surfaceColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: primaryColor.withOpacity(0.2),
-                  width: 1,
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (title == 'This week') {
+                isThisWeekExpanded = !isThisWeekExpanded;
+              } else {
+                isLastMonthExpanded = !isLastMonthExpanded;
+              }
+            });
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: secondaryTextColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              child: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: textColor.withOpacity(0.6),
-                size: 20,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: surfaceColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: primaryColor.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: AnimatedRotation(
+                  turns: isExpanded ? 0 : 0.25,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: textColor.withOpacity(0.6),
+                    size: 20,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        const SizedBox(height: 16),
-        ...projects.map((project) => TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 500),
-              builder: (context, value, child) => Transform.scale(
-                scale: value,
-                child: _buildProjectCard(project),
-              ),
-            )),
+        AnimatedCrossFade(
+          firstChild: Column(
+            children: [
+              const SizedBox(height: 16),
+              ...projects.map((project) => TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: const Duration(milliseconds: 500),
+                    builder: (context, value, child) => Transform.scale(
+                      scale: value,
+                      child: _buildProjectCard(project),
+                    ),
+                  )),
+            ],
+          ),
+          secondChild: const SizedBox.shrink(),
+          crossFadeState:
+              isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 200),
+        ),
       ],
     );
   }
@@ -711,7 +763,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
             builder: (context) => GroupProjectDetailPage(
               projectData: {
                 'name': project.title,
-                'type': 'Project Aktif',
+                'type': 'Active Project',
                 'color': primaryColor,
                 'teamName': teamData['name'],
               },
@@ -910,7 +962,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
                 isPending: true),
             const SizedBox(height: 20),
           ],
-          _buildMemberSection('Anggota Tim', teamMembers),
+          _buildMemberSection('Member Tim', teamMembers),
         ],
       ),
     );
@@ -947,7 +999,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Undang Anggota',
+                      'Undang Member',
                       style: TextStyle(
                         color: textColor,
                         fontSize: 20,
@@ -959,7 +1011,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
                       controller: controller,
                       style: TextStyle(color: textColor),
                       decoration: InputDecoration(
-                        hintText: 'Masukkan email anggota',
+                        hintText: 'Masukkan email Member',
                         hintStyle: TextStyle(
                           color: textColor.withOpacity(0.5),
                         ),
@@ -989,7 +1041,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
             ),
             const SizedBox(width: 12),
             Text(
-              'Undang Anggota',
+              'Undang Member',
               style: TextStyle(
                 color: primaryColor,
                 fontSize: 16,
@@ -1007,51 +1059,84 @@ class _ShowTeamPageState extends State<ShowTeamPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: secondaryTextColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: surfaceColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: primaryColor.withOpacity(0.2),
-                  width: 1,
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (isPending) {
+                isPendingMembersExpanded = !isPendingMembersExpanded;
+              } else {
+                isTeamMembersExpanded = !isTeamMembersExpanded;
+              }
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: secondaryTextColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              child: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: textColor.withOpacity(0.6),
-                size: 20,
-              ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: primaryColor.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: AnimatedRotation(
+                    turns: (isPending
+                            ? isPendingMembersExpanded
+                            : isTeamMembersExpanded)
+                        ? 0
+                        : 0.25,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: textColor.withOpacity(0.6),
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-        const SizedBox(height: 16),
-        ...members.map((member) => TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 500),
-              builder: (context, value, child) => Transform.scale(
-                scale: value,
-                child: _buildMemberCard(member, isPending),
-              ),
-            )),
+        AnimatedCrossFade(
+          firstChild: Column(
+            children: [
+              const SizedBox(height: 16),
+              ...members.map((member) => TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    duration: const Duration(milliseconds: 500),
+                    builder: (context, value, child) => Transform.scale(
+                      scale: value,
+                      child: _buildMemberCard(member, isPending),
+                    ),
+                  )),
+            ],
+          ),
+          secondChild: const SizedBox.shrink(),
+          crossFadeState:
+              (isPending ? isPendingMembersExpanded : isTeamMembersExpanded)
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 200),
+        ),
       ],
     );
   }
 
   Widget _buildMemberCard(TeamMember member, bool isPending) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+    Widget memberContent = Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -1123,39 +1208,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
               ],
             ),
           ),
-          if (isPending)
-            GestureDetector(
-                onTap: () => _handleAcceptMember(member),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [primaryColor, accentColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: primaryColor.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    'Terima',
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ))
-          else if (member.role.isNotEmpty)
+          if (!isPending && member.role.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -1180,6 +1233,66 @@ class _ShowTeamPageState extends State<ShowTeamPage>
             ),
         ],
       ),
+    );
+
+    if (isPending) {
+      return Dismissible(
+        key: Key(member.id),
+        background: Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Colors.green, Colors.greenAccent],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Icon(Icons.check, color: Colors.white),
+            ),
+          ),
+        ),
+        secondaryBackground: Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Colors.red, Colors.redAccent],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(Icons.close, color: Colors.white),
+            ),
+          ),
+        ),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            _handleAcceptMember(member);
+            return true;
+          } else {
+            _handleRejectMember(member);
+            return true;
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: memberContent,
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: memberContent,
     );
   }
 

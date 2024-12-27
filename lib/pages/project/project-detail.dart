@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'project-note.dart';
@@ -312,7 +314,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         children: [
           _buildTab(0, Icons.edit_note, 'Edit'),
           const SizedBox(width: 12),
-          _buildTab(1, Icons.print_outlined, 'Cetak'),
+          _buildTab(1, Icons.print_outlined, 'Description'),
           const SizedBox(width: 12),
           _buildTab(2, Icons.folder_outlined, 'File'),
         ],
@@ -402,7 +404,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tenggat Waktu',
+                  'Deadline',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 16,
@@ -423,7 +425,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'Selesai',
+                    'Completed',
                     style: TextStyle(
                       color: textColor,
                       fontSize: 12,
@@ -505,7 +507,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Deskripsi',
+              'Description',
               style: TextStyle(
                 color: textColor,
                 fontSize: 16,
@@ -520,7 +522,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                 fontSize: 14,
               ),
               decoration: InputDecoration(
-                hintText: 'Tambahkan Deskripsi',
+                hintText: 'Add Description',
                 hintStyle: TextStyle(
                   color: textColor.withOpacity(0.5),
                 ),
@@ -603,7 +605,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Konfigurasi',
+                  'Configuration',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 18,
@@ -730,7 +732,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                   size: 20,
                 ),
                 label: Text(
-                  'Tambah List',
+                  'Add a List',
                   style: TextStyle(
                     color: primaryColor,
                     fontSize: 14,

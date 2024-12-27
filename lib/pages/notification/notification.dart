@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class NotificationsSheet extends StatefulWidget {
@@ -50,7 +52,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            accepted ? 'Undangan diterima' : 'Undangan ditolak',
+            accepted ? 'Invitation received' : 'Invitation declined',
             style: const TextStyle(color: Colors.white),
           ),
           backgroundColor:
@@ -100,13 +102,13 @@ class _NotificationsSheetState extends State<NotificationsSheet>
             ),
             _buildOptionItem(
               icon: Icons.delete_outline,
-              title: 'Hapus Notifikasi',
+              title: 'Delete Notification',
               onTap: () {
                 Navigator.pop(context);
                 _removeNotification(index);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Notifikasi dihapus'),
+                    content: Text('Notification removed'),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -116,7 +118,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
             if (notification['type'] == 'invitation') ...[
               _buildOptionItem(
                 icon: Icons.check_circle_outline,
-                title: 'Terima Undangan',
+                title: 'Receive an Invitation',
                 onTap: () {
                   Navigator.pop(context);
                   _handleInvitationResponse(index, true);
@@ -124,7 +126,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
               ),
               _buildOptionItem(
                 icon: Icons.cancel_outlined,
-                title: 'Tolak Undangan',
+                title: 'Decline the Invitation',
                 onTap: () {
                   Navigator.pop(context);
                   _handleInvitationResponse(index, false);
@@ -206,7 +208,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Notifikasi',
+                    'Notification',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -221,13 +223,13 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Semua notifikasi dihapus'),
+                            content: Text('All notifications cleared'),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       },
                       icon: const Icon(Icons.delete_outline, size: 20),
-                      label: const Text('Hapus Semua'),
+                      label: const Text('Delete All'),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withOpacity(0.7),
                       ),
@@ -373,14 +375,14 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                         Row(
                           children: [
                             _buildActionButton(
-                              'Lihat Detail',
+                              'See Details',
                               onPressed: () {
                                 // Handle view detail
                               },
                             ),
                             const Spacer(),
                             Text(
-                              'Sisa: ${notification['daysRemaining']} hari',
+                              'Remaining: ${notification['daysRemaining']} Days',
                               style: const TextStyle(
                                 color: Color(0xFFFF5252),
                                 fontSize: 12,
@@ -395,14 +397,14 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                         Row(
                           children: [
                             _buildActionButton(
-                              'Terima',
+                              'Accept',
                               isPrimary: true,
                               onPressed: () =>
                                   _handleInvitationResponse(index, true),
                             ),
                             const SizedBox(width: 8),
                             _buildActionButton(
-                              'Tolak',
+                              'Decline',
                               isPrimary: false,
                               onPressed: () =>
                                   _handleInvitationResponse(index, false),
