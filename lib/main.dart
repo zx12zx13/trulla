@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
-import 'welcome_page.dart';
+
 void main() => runApp(TrullaApp());
 
 class TrullaApp extends StatelessWidget {
