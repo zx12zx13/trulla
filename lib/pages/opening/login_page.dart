@@ -1,9 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/providers/auth/login_provider.dart';
 import 'welcome_page.dart';
 import 'register.dart';
-import '../../widget/navbar.dart';
 import 'notification_widget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _LoginPageState extends State<LoginPage>
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
 
   bool _passwordVisible = false;
-  bool _isLoading = false;
+  // bool _isLoading = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -107,37 +108,21 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Future<void> _handleLogin() async {
-    if (_isLoading) return;
+    LoginProvider loginProvider = context.read<LoginProvider>();
+    if (loginProvider.loading) return;
 
     if (_validateInputs()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Simulate API call
-      try {
-        await Future.delayed(const Duration(seconds: 2));
-
-        // For demo, login is successful if email contains "test"
-        if (_emailController.text.contains('test')) {
-          _showNotification('Login successful!', true);
-          await Future.delayed(const Duration(seconds: 1));
-
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const NavBarController()),
-            );
-          }
-        } else {
-          _showNotification('Incorrect email or password', false);
-        }
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
+      if (mounted) {
+        loginProvider.login(
+          _emailController.text,
+          _passwordController.text,
+          onSuccess: () {
+            Navigator.pushReplacementNamed(context, '/home');
+          },
+          onError: (message) {
+            _showNotification(message, false);
+          },
+        );
       }
     }
   }
@@ -189,7 +174,7 @@ class _LoginPageState extends State<LoginPage>
               ),
             ),
           ),
-          if (_isLoading)
+          if (context.watch<LoginProvider>().loading)
             Container(
               color: Colors.black45,
               child: Center(
@@ -481,9 +466,10 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 elevation: 0,
               ),
-              onPressed: _isLoading ? null : _handleLogin,
+              onPressed:
+                  context.watch<LoginProvider>().loading ? null : _handleLogin,
               child: Text(
-                _isLoading ? 'Loading...' : 'Login',
+                context.watch<LoginProvider>().loading ? 'Loading...' : 'Login',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -521,7 +507,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 elevation: 0,
               ),
-              onPressed: _isLoading
+              onPressed: context.watch<LoginProvider>().loading
                   ? null
                   : () {
                       Navigator.pushReplacement(

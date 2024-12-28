@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/providers/auth/login_provider.dart';
 import 'widget/navbar.dart';
 import 'pages/opening/welcome_page.dart';
 
@@ -11,18 +13,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Trulla',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF2196F3),
-        scaffoldBackgroundColor: const Color(0xFF1A1E2D),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => LoginProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Trulla',
+        theme: ThemeData(
+          primaryColor: const Color(0xFF2196F3),
+          scaffoldBackgroundColor: const Color(0xFF1A1E2D),
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => WelcomePage(),
+          '/home': (context) => const NavBarController(),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => WelcomePage(),
-        '/home': (context) => const NavBarController(),
-      },
     );
   }
 }
