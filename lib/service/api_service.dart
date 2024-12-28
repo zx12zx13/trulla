@@ -57,7 +57,9 @@ class ApiService {
   }
 
   Future<ApiResponse> postRequestNoToken(
-      String endpoint, Map<String, dynamic> body) async {
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: {

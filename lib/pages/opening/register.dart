@@ -2,6 +2,8 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/providers/auth/register_provider.dart';
 import 'login_page.dart';
 import 'notification_widget.dart';
 
@@ -109,39 +111,23 @@ class _SignUpPageState extends State<SignUpPage>
   }
 
   void _handleSignUp() {
-    if (_validateInputs()) {
-      // Simulate API call with delay
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: surfaceColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const CircularProgressIndicator(),
-            ),
-          );
-        },
-      );
+    if (!_validateInputs()) return;
 
-      Future.delayed(const Duration(seconds: 2), () {
-        Navigator.pop(context); // Close loading dialog
-
-        // Simulate successful registration
-        _showNotification('Registrasi berhasil! Silahkan login', true);
-
-        // Navigate to welcome page after successful notification
-        Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      context.read<RegisterProvider>().register(
+        _nameController.text,
+        _emailController.text,
+        _passwordController.text,
+        onSuccess: () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const LoginPage()),
           );
-        });
-      });
+        },
+        onError: (message) {
+          _showNotification(message, false);
+        },
+      );
     }
   }
 
@@ -191,6 +177,22 @@ class _SignUpPageState extends State<SignUpPage>
               ),
             ),
           ),
+          if (context.watch<RegisterProvider>().loading)
+            Container(
+              color: Colors.black45,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

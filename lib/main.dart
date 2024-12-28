@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trulla/providers/auth/login_provider.dart';
+import 'package:trulla/providers/auth/register_provider.dart';
 import 'widget/navbar.dart';
 import 'pages/opening/welcome_page.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider()),
+        ChangeNotifierProvider(create: (context) => RegisterProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
