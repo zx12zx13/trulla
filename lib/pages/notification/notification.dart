@@ -1,13 +1,20 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class NotificationsSheet extends StatefulWidget {
   final List<Map<String, dynamic>> notifications;
+  final Function(int, bool)? onInvitationResponse;
+  final Function(int)? onNotificationRemoved;
+  final Function()? onAllNotificationsCleared;
 
   const NotificationsSheet({
     super.key,
     required this.notifications,
+    this.onInvitationResponse,
+    this.onNotificationRemoved,
+    this.onAllNotificationsCleared,
   });
 
   @override
@@ -20,11 +27,18 @@ class _NotificationsSheetState extends State<NotificationsSheet>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   late List<Map<String, dynamic>> _notifications;
+  bool _isProcessing = false;
+  Timer? _processingTimer;
+  int? _processingIndex;
 
   @override
   void initState() {
     super.initState();
     _notifications = List.from(widget.notifications);
+    _initializeAnimations();
+  }
+
+  void _initializeAnimations() {
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -46,38 +60,160 @@ class _NotificationsSheetState extends State<NotificationsSheet>
     _controller.forward();
   }
 
-  void _handleInvitationResponse(int index, bool accepted) {
-    setState(() {
-      // Tampilkan snackbar sesuai response
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            accepted ? 'Invitation received' : 'Invitation declined',
-            style: const TextStyle(color: Colors.white),
-          ),
-          backgroundColor:
-              accepted ? const Color(0xFF4CAF50) : const Color(0xFF9E9E9E),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 100,
-            right: 20,
-            left: 20,
-          ),
-        ),
-      );
-
-      // Hapus notifikasi setelah direspon
-      _removeNotification(index);
+  void _resetProcessingState() {
+    _processingTimer?.cancel();
+    _processingTimer = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+          _processingIndex = null;
+        });
+      }
     });
   }
 
-  void _removeNotification(int index) {
+  Future<void> _showSnackBar(String message, {Color? backgroundColor}) async {
+    if (!mounted) return;
+
+    // Tunggu sebentar untuk memastikan widget sudah ter-mount dengan benar
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+
+    // Hitung posisi yang tepat untuk snackbar
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final viewInsets = MediaQuery.of(context).viewInsets.bottom;
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+          bottom:
+              bottomPadding + viewInsets + 100, // Tambahkan offset yang cukup
+          right: 20,
+          left: 20,
+        ),
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        dismissDirection: DismissDirection.horizontal,
+        // Tambahkan animation untuk smooth transition
+        animation: CurvedAnimation(
+          parent: const AlwaysStoppedAnimation(1),
+          curve: Curves.easeOutCirc,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleInvitationResponse(int index, bool accepted) async {
+    if (_isProcessing) return;
+    if (index < 0 || index >= _notifications.length) return;
+    if (_processingIndex != null) return;
+
     setState(() {
-      _notifications.removeAt(index);
+      _isProcessing = true;
+      _processingIndex = index;
     });
+
+    try {
+      await widget.onInvitationResponse?.call(index, accepted);
+
+      if (!mounted) return;
+
+      setState(() {
+        _notifications.removeAt(index);
+      });
+
+      await _showSnackBar(
+        accepted ? 'Invitation accepted' : 'Invitation declined',
+        backgroundColor:
+            accepted ? const Color(0xFF4CAF50) : const Color(0xFF9E9E9E),
+      );
+    } catch (e) {
+      if (mounted) {
+        await _showSnackBar(
+          'Failed to process invitation',
+          backgroundColor: Colors.red,
+        );
+      }
+    } finally {
+      _resetProcessingState();
+    }
+  }
+
+  Future<void> _removeNotification(int index) async {
+    if (_isProcessing) return;
+    if (index < 0 || index >= _notifications.length) return;
+    if (_processingIndex != null) return;
+
+    try {
+      // Panggil callback
+      await widget.onNotificationRemoved?.call(index);
+
+      if (!mounted) return;
+
+      // Update state
+      setState(() {
+        _notifications.removeAt(index);
+      });
+
+      await _showSnackBar('Notification removed');
+    } catch (e) {
+      if (mounted) {
+        await _showSnackBar(
+          'Failed to remove notification',
+          backgroundColor: Colors.red,
+        );
+      }
+    } finally {
+      _resetProcessingState();
+    }
+  }
+
+  Future<void> _clearAllNotifications() async {
+    if (_isProcessing) return;
+    if (_processingIndex != null) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      await widget.onAllNotificationsCleared?.call();
+
+      if (!mounted) return;
+
+      setState(() {
+        _notifications.clear();
+      });
+
+      await _showSnackBar('All notifications cleared');
+    } catch (e) {
+      if (mounted) {
+        await _showSnackBar(
+          'Failed to clear notifications',
+          backgroundColor: Colors.red,
+        );
+      }
+    } finally {
+      _resetProcessingState();
+    }
   }
 
   void _showMoreOptions(BuildContext context, int index) {
+    if (_isProcessing) return;
+    if (index < 0 || index >= _notifications.length) return;
+    if (_processingIndex != null) return;
+
     final notification = _notifications[index];
 
     showModalBottomSheet(
@@ -86,60 +222,62 @@ class _NotificationsSheetState extends State<NotificationsSheet>
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            _buildOptionItem(
-              icon: Icons.delete_outline,
-              title: 'Delete Notification',
-              onTap: () {
-                Navigator.pop(context);
-                _removeNotification(index);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Notification removed'),
-                    behavior: SnackBarBehavior.floating,
+      isDismissible: !_isProcessing,
+      enableDrag: !_isProcessing,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => !_isProcessing,
+        child: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                );
-              },
-              isDestructive: true,
+                ),
+                _buildOptionItem(
+                  icon: Icons.delete_outline,
+                  title: 'Delete Notification',
+                  onTap: () {
+                    Navigator.pop(context);
+                    _removeNotification(index);
+                  },
+                  isDestructive: true,
+                ),
+                if (notification['type'] == 'invitation') ...[
+                  _buildOptionItem(
+                    icon: Icons.check_circle_outline,
+                    title: 'Accept Invitation',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _handleInvitationResponse(index, true);
+                    },
+                  ),
+                  _buildOptionItem(
+                    icon: Icons.cancel_outlined,
+                    title: 'Decline Invitation',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _handleInvitationResponse(index, false);
+                    },
+                  ),
+                ],
+                const SizedBox(height: 8),
+                if (!_isProcessing)
+                  _buildOptionItem(
+                    icon: Icons.close,
+                    title: 'Cancel',
+                    onTap: () => Navigator.pop(context),
+                  ),
+              ],
             ),
-            if (notification['type'] == 'invitation') ...[
-              _buildOptionItem(
-                icon: Icons.check_circle_outline,
-                title: 'Receive an Invitation',
-                onTap: () {
-                  Navigator.pop(context);
-                  _handleInvitationResponse(index, true);
-                },
-              ),
-              _buildOptionItem(
-                icon: Icons.cancel_outlined,
-                title: 'Decline the Invitation',
-                onTap: () {
-                  Navigator.pop(context);
-                  _handleInvitationResponse(index, false);
-                },
-              ),
-            ],
-            const SizedBox(height: 8),
-            _buildOptionItem(
-              icon: Icons.close,
-              title: 'Batal',
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -151,29 +289,36 @@ class _NotificationsSheetState extends State<NotificationsSheet>
     required VoidCallback onTap,
     bool isDestructive = false,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 12,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isDestructive ? const Color(0xFFFF5252) : Colors.white,
-              size: 24,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: !_isProcessing ? onTap : null,
+        child: Opacity(
+          opacity: _isProcessing ? 0.5 : 1.0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 12,
             ),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: TextStyle(
-                color: isDestructive ? const Color(0xFFFF5252) : Colors.white,
-                fontSize: 16,
-              ),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  color: isDestructive ? const Color(0xFFFF5252) : Colors.white,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color:
+                        isDestructive ? const Color(0xFFFF5252) : Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -208,7 +353,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Notification',
+                    'Notifications',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -217,19 +362,9 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                   ),
                   if (_notifications.isNotEmpty)
                     TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _notifications.clear();
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('All notifications cleared'),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
+                      onPressed: !_isProcessing ? _clearAllNotifications : null,
                       icon: const Icon(Icons.delete_outline, size: 20),
-                      label: const Text('Delete All'),
+                      label: const Text('Clear All'),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withOpacity(0.7),
                       ),
@@ -240,75 +375,100 @@ class _NotificationsSheetState extends State<NotificationsSheet>
           ),
           Expanded(
             child: _notifications.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.notifications_none_rounded,
-                          size: 48,
-                          color: Colors.white.withOpacity(0.3),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Tidak ada notifikasi',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _notifications.length,
-                    itemBuilder: (context, index) {
-                      return SlideTransition(
-                        position: _slideAnimation,
-                        child: FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Dismissible(
-                            key: Key('notification_$index'),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFF5252),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.delete_outline,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onDismissed: (direction) {
-                              _removeNotification(index);
-                            },
-                            child: _buildNotificationItem(
-                              _notifications[index],
-                              index,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                ? _buildEmptyState()
+                : _buildNotificationsList(scrollController),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.notifications_none_rounded,
+            size: 48,
+            color: Colors.white.withOpacity(0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No notifications',
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationsList(ScrollController scrollController) {
+    return ListView.builder(
+      controller: scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      itemCount: _notifications.length,
+      itemBuilder: (context, index) {
+        final notification = _notifications[index];
+        return SlideTransition(
+          position: _slideAnimation,
+          child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Dismissible(
+                key: ValueKey('notification_${notification.hashCode}'),
+                direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) async {
+                  if (_isProcessing || _processingIndex != null) return false;
+
+                  // Tambahkan setState di sini
+                  setState(() {
+                    _isProcessing = true;
+                    _processingIndex = index;
+                  });
+                  return true;
+                },
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF5252),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.white,
+                  ),
+                ),
+                onDismissed: (direction) async {
+                  // Ubah ini menjadi async
+                  await _removeNotification(index);
+
+                  // Tambahkan setState setelah notifikasi dihapus
+                  if (mounted) {
+                    setState(() {
+                      _notifications.removeAt(index);
+                    });
+                  }
+                },
+                child: _buildNotificationItem(notification, index),
+              )),
+        );
+      },
+    );
+  }
+
   Widget _buildNotificationItem(Map<String, dynamic> notification, int index) {
+    final isDeadline = notification['type'] == 'deadline';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1E2D),
         borderRadius: BorderRadius.circular(12),
-        border: notification['type'] == 'deadline'
+        border: isDeadline
             ? Border.all(
                 color: const Color(0xFFFF5252).withOpacity(0.3),
                 width: 1,
@@ -319,19 +479,17 @@ class _NotificationsSheetState extends State<NotificationsSheet>
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            // Handle tap on notification
-          },
+          onTap: !_isProcessing ? () => _showMoreOptions(context, index) : null,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildIconContainer(
-                  icon: notification['type'] == 'deadline'
+                  icon: isDeadline
                       ? Icons.timer_outlined
                       : Icons.group_add_rounded,
-                  color: notification['type'] == 'deadline'
+                  color: isDeadline
                       ? const Color(0xFFFF5252)
                       : const Color(0xFF2196F3),
                 ),
@@ -345,7 +503,7 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                         children: [
                           Expanded(
                             child: Text(
-                              notification['title'],
+                              notification['title'] ?? 'No Title',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -358,60 +516,25 @@ class _NotificationsSheetState extends State<NotificationsSheet>
                               Icons.more_horiz,
                               color: Colors.white,
                             ),
-                            onPressed: () => _showMoreOptions(context, index),
+                            onPressed: !_isProcessing
+                                ? () => _showMoreOptions(context, index)
+                                : null,
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        notification['description'],
+                        notification['description'] ?? 'No description',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontSize: 14,
                         ),
                       ),
-                      if (notification['type'] == 'deadline') ...[
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            _buildActionButton(
-                              'See Details',
-                              onPressed: () {
-                                // Handle view detail
-                              },
-                            ),
-                            const Spacer(),
-                            Text(
-                              'Remaining: ${notification['daysRemaining']} Days',
-                              style: const TextStyle(
-                                color: Color(0xFFFF5252),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      if (notification['type'] == 'invitation') ...[
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            _buildActionButton(
-                              'Accept',
-                              isPrimary: true,
-                              onPressed: () =>
-                                  _handleInvitationResponse(index, true),
-                            ),
-                            const SizedBox(width: 8),
-                            _buildActionButton(
-                              'Decline',
-                              isPrimary: false,
-                              onPressed: () =>
-                                  _handleInvitationResponse(index, false),
-                            ),
-                          ],
-                        ),
-                      ],
+                      const SizedBox(height: 12),
+                      if (isDeadline)
+                        _buildDeadlineInfo(notification)
+                      else if (notification['type'] == 'invitation')
+                        _buildInvitationActions(index),
                     ],
                   ),
                 ),
@@ -442,6 +565,68 @@ class _NotificationsSheetState extends State<NotificationsSheet>
     );
   }
 
+  Widget _buildDeadlineInfo(Map<String, dynamic> notification) {
+    return Row(
+      children: [
+        Text(
+          'Due in ${notification['daysRemaining'] ?? 0} days',
+          style: const TextStyle(
+            color: Color(0xFFFF5252),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInvitationActions(int index) {
+    final isProcessingThis = _processingIndex == index;
+
+    if (isProcessingThis) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.0,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildActionButton(
+                  'Accept',
+                  isPrimary: true,
+                  onPressed: () => _handleInvitationResponse(index, true),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildActionButton(
+                  'Decline',
+                  isPrimary: false,
+                  onPressed: () => _handleInvitationResponse(index, false),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildActionButton(
     String label, {
     bool isPrimary = true,
@@ -450,22 +635,26 @@ class _NotificationsSheetState extends State<NotificationsSheet>
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onPressed,
+        onTap: !_isProcessing ? onPressed : null,
         borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: isPrimary
-                ? const Color(0xFF2196F3)
-                : Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isPrimary ? Colors.white : Colors.white.withOpacity(0.7),
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+        child: Opacity(
+          opacity: _isProcessing ? 0.5 : 1.0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: isPrimary
+                  ? const Color(0xFF2196F3)
+                  : Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isPrimary ? Colors.white : Colors.white.withOpacity(0.7),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),
@@ -475,7 +664,45 @@ class _NotificationsSheetState extends State<NotificationsSheet>
 
   @override
   void dispose() {
+    _processingTimer?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+}
+
+// Extension untuk memvalidasi dan memformat notifikasi
+extension NotificationValidation on Map<String, dynamic> {
+  bool get isValid {
+    return containsKey('type') &&
+        containsKey('title') &&
+        containsKey('description');
+  }
+
+  bool get isInvitation => this['type'] == 'invitation';
+  bool get isDeadline => this['type'] == 'deadline';
+
+  String get formattedTitle => this['title'] ?? 'No Title';
+  String get formattedDescription => this['description'] ?? 'No Description';
+
+  DateTime get timestamp {
+    if (containsKey('timestamp') && this['timestamp'] != null) {
+      return DateTime.tryParse(this['timestamp']) ?? DateTime.now();
+    }
+    return DateTime.now();
+  }
+
+  String get formattedTimeAgo {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
   }
 }

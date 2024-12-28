@@ -12,11 +12,22 @@ class ProjectFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'addProject',
-      backgroundColor: const Color(0xFF2196F3),
-      onPressed: () => showAddProjectDialog(context),
-      child: const Icon(Icons.add),
+    return Container(
+      height: 60, // Menyamakan ukuran container
+      width: 60, // Menyamakan ukuran container
+      margin: const EdgeInsets.only(right: 8),
+      child: FloatingActionButton(
+        heroTag: 'addProject',
+        backgroundColor: const Color(0xFF2196F3),
+        elevation: 4,
+        highlightElevation: 8,
+        onPressed: () => showAddProjectDialog(context),
+        child: const Icon(
+          Icons.add,
+          size: 30, // Menyamakan ukuran icon
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
@@ -25,7 +36,6 @@ class ProjectFAB extends StatelessWidget {
     final descriptionController = TextEditingController();
     DateTime selectedDate = DateTime.now().add(const Duration(days: 7));
     List<String> selectedTags = [];
-    String visibility = 'private';
 
     final availableTags = [
       'Design',
@@ -102,30 +112,6 @@ class ProjectFAB extends StatelessWidget {
                       }
                     },
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Visibilitas',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Row(
-                  children: [
-                    Radio(
-                      value: 'private',
-                      groupValue: visibility,
-                      onChanged: (value) =>
-                          setState(() => visibility = value.toString()),
-                    ),
-                    const Text('Private',
-                        style: TextStyle(color: Colors.white)),
-                    Radio(
-                      value: 'public',
-                      groupValue: visibility,
-                      onChanged: (value) =>
-                          setState(() => visibility = value.toString()),
-                    ),
-                    const Text('Public', style: TextStyle(color: Colors.white)),
-                  ],
                 ),
                 const SizedBox(height: 16),
                 const Text(

@@ -937,7 +937,7 @@ class _ShowTeamPageState extends State<ShowTeamPage>
           ),
           const SizedBox(width: 6),
           Text(
-            '$daysRemaining hari',
+            '$daysRemaining Days',
             style: TextStyle(
               color: isUrgent ? const Color(0xFFFF5252) : primaryColor,
               fontSize: 12,

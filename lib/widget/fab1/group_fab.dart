@@ -12,11 +12,22 @@ class GroupFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.small(
-      heroTag: 'addGroup',
-      backgroundColor: const Color(0xFF1565C0),
-      onPressed: () => showAddGroupDialog(context),
-      child: const Icon(Icons.group_add),
+    return Container(
+      height: 60, // Memperbesar ukuran container
+      width: 60, // Memperbesar ukuran container
+      margin: const EdgeInsets.only(right: 8),
+      child: FloatingActionButton(
+        heroTag: 'addGroup',
+        backgroundColor: const Color(0xFF1565C0),
+        elevation: 4,
+        highlightElevation: 8,
+        onPressed: () => showAddGroupDialog(context),
+        child: const Icon(
+          Icons.group_add,
+          size: 30, // Memperbesar ukuran icon
+          color: Colors.white,
+        ),
+      ),
     );
   }
 

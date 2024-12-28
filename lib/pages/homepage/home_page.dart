@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, empty_catches
 
 import '../quotes/quotes.dart';
 import '../notification/notification.dart';
@@ -756,11 +756,30 @@ class _HomePageState extends State<HomePage>
       context: context,
       backgroundColor: surfaceColor,
       isScrollControlled: true,
+      useSafeArea: true, // Tambahkan ini
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => NotificationsSheet(
-        notifications: notifications,
+      builder: (context) => SafeArea(
+        // Bungkus dengan SafeArea
+        child: NotificationsSheet(
+          notifications: notifications,
+          onNotificationRemoved: (index) async {
+            try {
+              setState(() {
+                notifications.removeAt(index);
+              });
+            } catch (e) {}
+          },
+          onAllNotificationsCleared: () async {
+            try {
+              setState(() {
+                notifications.clear();
+              });
+              Navigator.pop(context);
+            } catch (e) {}
+          },
+        ),
       ),
     );
   }

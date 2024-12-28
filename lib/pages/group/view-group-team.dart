@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'show-team.dart';
 import '../../widget/fab1/group_fab.dart';
-import '../../widget/fab1/project_fab.dart';
 
 class ListTeamPage extends StatefulWidget {
   const ListTeamPage({super.key});
@@ -694,17 +693,11 @@ class _ListTeamPageState extends State<ListTeamPage>
           ),
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GroupFAB(onPressed: () {
-            setState(() {});
-          }),
-          const SizedBox(height: 8),
-          ProjectFAB(onPressed: () {
-            setState(() {});
-          }),
-        ],
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        child: GroupFAB(onPressed: () {
+          setState(() {});
+        }),
       ),
     );
   }
