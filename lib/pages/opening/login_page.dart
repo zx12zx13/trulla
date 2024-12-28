@@ -116,6 +116,7 @@ class _LoginPageState extends State<LoginPage>
         loginProvider.login(
           _emailController.text,
           _passwordController.text,
+          context,
           onSuccess: () {
             Navigator.pushReplacementNamed(context, '/home');
           },

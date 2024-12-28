@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trulla/utils/api_response.dart';
+import 'package:trulla/pages/opening/login_page.dart';
 
 class ApiService {
   String baseUrl = "http://10.0.2.2:8000/api";
 
-  Future<ApiResponse> getRequest(String endpoint) async {
+  Future<ApiResponse> getRequest(String endpoint, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -22,6 +24,9 @@ class ApiService {
     final decodedResponse = utf8.decode(response.bodyBytes);
     if (response.statusCode == 401) {
       prefs.remove('token');
+      if (context.mounted) {
+        _redirectToLogin(context);
+      }
     }
     return ApiResponse(
       statusCode: response.statusCode,
@@ -32,6 +37,7 @@ class ApiService {
   Future<ApiResponse> postRequest(
     String endpoint,
     Map<String, dynamic> body,
+    BuildContext context,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -49,6 +55,9 @@ class ApiService {
     final decodedResponse = utf8.decode(response.bodyBytes);
     if (response.statusCode == 401) {
       prefs.remove('token');
+      if (context.mounted) {
+        _redirectToLogin(context);
+      }
     }
     return ApiResponse(
       statusCode: response.statusCode,
@@ -73,6 +82,14 @@ class ApiService {
     return ApiResponse(
       statusCode: response.statusCode,
       data: jsonDecode(decodedResponse),
+    );
+  }
+
+  void _redirectToLogin(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false,
     );
   }
 }

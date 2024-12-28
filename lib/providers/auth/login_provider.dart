@@ -16,7 +16,8 @@ class LoginProvider with ChangeNotifier {
 
   Future<void> login(
     String email,
-    String password, {
+    String password,
+    BuildContext context, {
     required Function onSuccess,
     required Function(String) onError,
   }) async {
@@ -36,14 +37,17 @@ class LoginProvider with ChangeNotifier {
         String token = response.data['token'];
         prefs.setString('token', token);
 
-        ApiResponse userResponse = await _apiService.getRequest('/auth/user');
-        if (userResponse.statusCode == 200) {
-          // Save user data to shared preferences
-          prefs.setString('name', userResponse.data['name']);
-          prefs.setString('email', userResponse.data['email']);
-          onSuccess();
-        } else {
-          onError('Failed to fetch user data');
+        if (context.mounted) {
+          ApiResponse userResponse =
+              await _apiService.getRequest('/auth/user', context);
+          if (userResponse.statusCode == 200) {
+            // Save user data to shared preferences
+            prefs.setString('name', userResponse.data['name']);
+            prefs.setString('email', userResponse.data['email']);
+            onSuccess();
+          } else {
+            onError('Failed to fetch user data');
+          }
         }
       } else {
         onError('Login failed: ${response.data['message']}');
