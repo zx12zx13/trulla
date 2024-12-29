@@ -33,14 +33,11 @@ class _ProjectPageState extends State<ProjectPage>
   final List<Map<String, dynamic>> projects = [
     {
       'title': 'UI Design App',
-      'name': 'UI Design App',
-      'type': 'Design',
       'color': const Color(0xFF2196F3),
       'progress': 0.8,
       'deadline': DateTime.now().add(const Duration(days: 5)),
       'description': 'Mobile app UI design project',
       'status': 'ongoing',
-      'tags': ['Design', 'Mobile'],
       'tasks': [
         {'title': 'Design System', 'isCompleted': true},
         {'title': 'Wireframes', 'isCompleted': true},
@@ -49,14 +46,11 @@ class _ProjectPageState extends State<ProjectPage>
     },
     {
       'title': 'Backend Development',
-      'name': 'Backend Development',
-      'type': 'Development',
       'color': const Color(0xFF4CAF50),
       'progress': 1.0,
       'deadline': DateTime.now().add(const Duration(days: 7)),
       'description': 'Server development and API integration',
       'status': 'completed',
-      'tags': ['Development', 'Server'],
       'tasks': [
         {'title': 'API Design', 'isCompleted': true},
         {'title': 'Database Setup', 'isCompleted': true},
@@ -65,14 +59,11 @@ class _ProjectPageState extends State<ProjectPage>
     },
     {
       'title': 'Mobile Development',
-      'name': 'Mobile Development',
-      'type': 'Development',
       'color': const Color(0xFFFFC107),
       'progress': 0.3,
       'deadline': DateTime.now().add(const Duration(days: 1)),
       'description': 'Flutter mobile app development',
       'status': 'ongoing',
-      'tags': ['Development', 'Mobile'],
       'tasks': [
         {'title': 'Project Setup', 'isCompleted': true},
         {'title': 'Core Features', 'isCompleted': false},
@@ -133,17 +124,16 @@ class _ProjectPageState extends State<ProjectPage>
         filteredProjects = List.from(projects);
       } else {
         filteredProjects = projects
-            .where((project) =>
-                project['title']
-                    .toString()
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) ||
-                project['type']
-                    .toString()
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) ||
-                project['tags'].any((tag) =>
-                    tag.toString().toLowerCase().contains(query.toLowerCase())))
+            .where((project) => project['title']
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()))
+            // project['type']
+            //     .toString()
+            //     .toLowerCase()
+            //     .contains(query.toLowerCase()) ||
+            // project['tags'].any((tag) =>
+            //     tag.toString().toLowerCase().contains(query.toLowerCase())))
             .toList();
       }
       _sortProjectsByDeadline();
@@ -462,15 +452,15 @@ class _ProjectPageState extends State<ProjectPage>
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                project['type'],
-                                style: TextStyle(
-                                  color: secondaryTextColor,
-                                  fontSize: 14,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
+                              // const SizedBox(height: 4),
+                              // Text(
+                              //   project['type'],
+                              //   style: TextStyle(
+                              //     color: secondaryTextColor,
+                              //     fontSize: 14,
+                              //     letterSpacing: 0.3,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -646,41 +636,41 @@ class _ProjectPageState extends State<ProjectPage>
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: (project['tags'] as List<String>).map((tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withOpacity(0.2),
-                                primaryColor.withOpacity(0.2),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: accentColor.withOpacity(0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            tag,
-                            style: TextStyle(
-                              color: textColor.withOpacity(0.9),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                    // Wrap(
+                    //   spacing: 8,
+                    //   runSpacing: 8,
+                    //   children: (project['tags'] as List<String>).map((tag) {
+                    //     return Container(
+                    //       padding: const EdgeInsets.symmetric(
+                    //         horizontal: 12,
+                    //         vertical: 6,
+                    //       ),
+                    //       decoration: BoxDecoration(
+                    //         gradient: LinearGradient(
+                    //           colors: [
+                    //             accentColor.withOpacity(0.2),
+                    //             primaryColor.withOpacity(0.2),
+                    //           ],
+                    //           begin: Alignment.topLeft,
+                    //           end: Alignment.bottomRight,
+                    //         ),
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         border: Border.all(
+                    //           color: accentColor.withOpacity(0.2),
+                    //           width: 1,
+                    //         ),
+                    //       ),
+                    //       child: Text(
+                    //         tag,
+                    //         style: TextStyle(
+                    //           color: textColor.withOpacity(0.9),
+                    //           fontSize: 12,
+                    //           fontWeight: FontWeight.w500,
+                    //         ),
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    // ),
                   ],
                 ),
               ),

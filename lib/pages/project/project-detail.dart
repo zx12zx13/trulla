@@ -212,7 +212,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.projectData['name'],
+                        widget.projectData['title'],
                         style: TextStyle(
                           color: textColor,
                           fontSize: 20,
@@ -232,14 +232,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                           border: Border.all(
                             color: widget.projectData['color'].withOpacity(0.2),
                             width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          widget.projectData['type'],
-                          style: TextStyle(
-                            color: widget.projectData['color'],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
