@@ -285,6 +285,7 @@ class _ProjectPageState extends State<ProjectPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
               gradient: LinearGradient(

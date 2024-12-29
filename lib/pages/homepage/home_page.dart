@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use, empty_catches
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../quotes/quotes.dart';
 import '../notification/notification.dart';
 import '../../widget/fab1/group_fab.dart';
@@ -30,6 +32,8 @@ class _HomePageState extends State<HomePage>
   final Color accentColor = const Color(0xFF6C63FF);
   final Color textColor = const Color(0xFFFFFFFF);
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
+
+  String name = '';
 
   // Project data remains the same
   final List<Map<String, dynamic>> projectsData = [
@@ -158,6 +162,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    getUserName();
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     );
@@ -183,6 +189,13 @@ class _HomePageState extends State<HomePage>
 
     filteredProjects = List<Map<String, dynamic>>.from(projectsData);
     _animationController.forward();
+  }
+
+  void getUserName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name') ?? '';
+    });
   }
 
   Widget _buildGreeting() {
@@ -236,7 +249,7 @@ class _HomePageState extends State<HomePage>
           Row(
             children: [
               Text(
-                'Marino',
+                name,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.9),
                   fontSize: 18,
