@@ -21,12 +21,9 @@ class ApiService {
       },
     );
 
-    print('Response goten, ' + response.statusCode.toString());
-
     final decodedResponse = utf8.decode(response.bodyBytes);
     if (response.statusCode == 401) {
       prefs.remove('token');
-      print('Token expired');
       if (context.mounted) {
         _redirectToLogin(context);
       }
