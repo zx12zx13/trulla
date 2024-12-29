@@ -35,16 +35,6 @@ class ProjectFAB extends StatelessWidget {
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
     DateTime selectedDate = DateTime.now().add(const Duration(days: 7));
-    List<String> selectedTags = [];
-
-    final availableTags = [
-      'Design',
-      'Development',
-      'Mobile',
-      'Web',
-      'Server',
-      'Testing'
-    ];
 
     showDialog(
       context: context,
@@ -114,28 +104,6 @@ class ProjectFAB extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Tag',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Wrap(
-                  spacing: 8,
-                  children: availableTags.map((tag) {
-                    return FilterChip(
-                      label: Text(tag),
-                      selected: selectedTags.contains(tag),
-                      onSelected: (selected) {
-                        setState(() {
-                          if (selected) {
-                            selectedTags.add(tag);
-                          } else {
-                            selectedTags.remove(tag);
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
-                ),
               ],
             ),
           ),

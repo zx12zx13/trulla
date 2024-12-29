@@ -22,7 +22,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   final TextEditingController _descController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
-  final double _progress = 80.0;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -33,13 +32,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   final Color accentColor = const Color(0xFF6C63FF);
   final Color textColor = const Color(0xFFFFFFFF);
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
-
-  final List<Map<String, dynamic>> _tasks = [
-    {'title': 'Konfigurasi Server', 'isCompleted': true},
-    {'title': 'Konfigurasi Klien', 'isCompleted': true},
-    {'title': 'Konfigurasi Jaringan', 'isCompleted': true},
-    {'title': 'Konfigurasi DNS', 'isCompleted': false},
-  ];
 
   @override
   void initState() {
@@ -212,7 +204,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.projectData['name'],
+                        widget.projectData['title'],
                         style: TextStyle(
                           color: textColor,
                           fontSize: 20,
@@ -234,14 +226,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                             width: 1,
                           ),
                         ),
-                        child: Text(
-                          widget.projectData['type'],
-                          style: TextStyle(
-                            color: widget.projectData['color'],
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -254,12 +238,12 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               children: [
                 _buildProjectStat(
                   'Progress',
-                  '${_progress.toInt()}%',
+                  '${(widget.projectData['progress'] * 100).toInt()}%',
                   widget.projectData['color'],
                 ),
                 _buildProjectStat(
                   'Tasks',
-                  '${_tasks.where((t) => t['isCompleted']).length}/${_tasks.length}',
+                  '${widget.projectData['tasks'].where((t) => t['isCompleted'] as bool).length}/${widget.projectData['tasks'].length}',
                   primaryColor,
                 ),
               ],
@@ -314,7 +298,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         children: [
           _buildTab(0, Icons.edit_note, 'Edit'),
           const SizedBox(width: 12),
-          _buildTab(1, Icons.print_outlined, 'Description'),
+          _buildTab(1, Icons.print_outlined, 'Notes'),
           const SizedBox(width: 12),
           _buildTab(2, Icons.folder_outlined, 'File'),
         ],
@@ -675,7 +659,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${_progress.toInt()}%',
+                        '${(widget.projectData['progress'] * 100).toInt()}%',
                         style: TextStyle(
                           color: primaryColor,
                           fontSize: 12,
@@ -696,7 +680,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                       ),
                     ),
                     FractionallySizedBox(
-                      widthFactor: _progress / 100,
+                      widthFactor: widget.projectData['progress'],
                       child: Container(
                         height: 8,
                         decoration: BoxDecoration(
@@ -721,7 +705,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               ],
             ),
             const SizedBox(height: 20),
-            ..._tasks.map((task) => _buildTaskItem(task)).toList(),
+            ...widget.projectData['tasks']
+                .map<Widget>(
+                    (task) => _buildTaskItem(task as Map<String, dynamic>))
+                .toList(),
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: TextButton.icon(
@@ -958,14 +945,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     ),
                   ),
                 ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Saya merasa sangat bahagia, hahahahaha',
-              style: TextStyle(
-                color: textColor,
-                fontSize: 14,
               ),
             ),
           ],
