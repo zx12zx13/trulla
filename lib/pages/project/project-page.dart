@@ -1,9 +1,12 @@
 // ignore_for_file: file_names, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:trulla/model/project_model.dart';
 import 'project-detail.dart';
 import '../notification/notification.dart';
 import '../../widget/fab1/project_fab.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/providers/navigation/project_provider.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -27,50 +30,50 @@ class _ProjectPageState extends State<ProjectPage>
   final Color textColor = const Color(0xFFFFFFFF);
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
 
-  List<Map<String, dynamic>> filteredProjects = [];
+  List<Project> filteredProjects = [];
 
-  // Your existing dummy data
-  final List<Map<String, dynamic>> projects = [
-    {
-      'title': 'UI Design App',
-      'color': const Color(0xFF2196F3),
-      'progress': 0.8,
-      'deadline': DateTime.now().add(const Duration(days: 5)),
-      'description': 'Mobile app UI design project',
-      'status': 'ongoing',
-      'tasks': [
-        {'title': 'Design System', 'isCompleted': true},
-        {'title': 'Wireframes', 'isCompleted': true},
-        {'title': 'High-fidelity Design', 'isCompleted': false},
-      ],
-    },
-    {
-      'title': 'Backend Development',
-      'color': const Color(0xFF4CAF50),
-      'progress': 1.0,
-      'deadline': DateTime.now().add(const Duration(days: 7)),
-      'description': 'Server development and API integration',
-      'status': 'completed',
-      'tasks': [
-        {'title': 'API Design', 'isCompleted': true},
-        {'title': 'Database Setup', 'isCompleted': true},
-        {'title': 'Server Configuration', 'isCompleted': true},
-      ],
-    },
-    {
-      'title': 'Mobile Development',
-      'color': const Color(0xFFFFC107),
-      'progress': 0.3,
-      'deadline': DateTime.now().add(const Duration(days: 1)),
-      'description': 'Flutter mobile app development',
-      'status': 'ongoing',
-      'tasks': [
-        {'title': 'Project Setup', 'isCompleted': true},
-        {'title': 'Core Features', 'isCompleted': false},
-        {'title': 'Testing', 'isCompleted': false},
-      ],
-    }
-  ];
+  // // Your existing dummy data
+  // final List<Map<String, dynamic>> projects = [
+  //   {
+  //     'title': 'UI Design App',
+  //     'color': const Color(0xFF2196F3),
+  //     'progress': 0.8,
+  //     'deadline': DateTime.now().add(const Duration(days: 5)),
+  //     'description': 'Mobile app UI design project',
+  //     'status': 'ongoing',
+  //     'tasks': [
+  //       {'title': 'Design System', 'isCompleted': true},
+  //       {'title': 'Wireframes', 'isCompleted': true},
+  //       {'title': 'High-fidelity Design', 'isCompleted': false},
+  //     ],
+  //   },
+  //   {
+  //     'title': 'Backend Development',
+  //     'color': const Color(0xFF4CAF50),
+  //     'progress': 1.0,
+  //     'deadline': DateTime.now().add(const Duration(days: 7)),
+  //     'description': 'Server development and API integration',
+  //     'status': 'completed',
+  //     'tasks': [
+  //       {'title': 'API Design', 'isCompleted': true},
+  //       {'title': 'Database Setup', 'isCompleted': true},
+  //       {'title': 'Server Configuration', 'isCompleted': true},
+  //     ],
+  //   },
+  //   {
+  //     'title': 'Mobile Development',
+  //     'color': const Color(0xFFFFC107),
+  //     'progress': 0.3,
+  //     'deadline': DateTime.now().add(const Duration(days: 1)),
+  //     'description': 'Flutter mobile app development',
+  //     'status': 'ongoing',
+  //     'tasks': [
+  //       {'title': 'Project Setup', 'isCompleted': true},
+  //       {'title': 'Core Features', 'isCompleted': false},
+  //       {'title': 'Testing', 'isCompleted': false},
+  //     ],
+  //   }
+  // ];
 
   final List<Map<String, dynamic>> notifications = [
     {
@@ -105,15 +108,20 @@ class _ProjectPageState extends State<ProjectPage>
       curve: Curves.easeOut,
     ));
 
-    filteredProjects = List.from(projects);
-    _sortProjectsByDeadline();
     _animationController.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProjectProvider>().fetchProjects(context).then((_) {
+        setState(() {
+          filteredProjects = context.read<ProjectProvider>().projects;
+        });
+      });
+    });
   }
 
   void _sortProjectsByDeadline() {
     filteredProjects.sort((a, b) {
-      DateTime deadlineA = a['deadline'];
-      DateTime deadlineB = b['deadline'];
+      DateTime deadlineA = a.deadline;
+      DateTime deadlineB = b.deadline;
       return deadlineA.compareTo(deadlineB);
     });
   }
@@ -121,13 +129,13 @@ class _ProjectPageState extends State<ProjectPage>
   void _filterProjects(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredProjects = List.from(projects);
+        filteredProjects = List.from(context.read<ProjectProvider>().projects);
       } else {
-        filteredProjects = projects
-            .where((project) => project['title']
-                .toString()
-                .toLowerCase()
-                .contains(query.toLowerCase()))
+        filteredProjects = context
+            .read<ProjectProvider>()
+            .projects
+            .where((project) =>
+                project.judul.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
       _sortProjectsByDeadline();
@@ -352,8 +360,8 @@ class _ProjectPageState extends State<ProjectPage>
     );
   }
 
-  Widget _buildProjectItem(Map<String, dynamic> project) {
-    int daysRemaining = project['deadline'].difference(DateTime.now()).inDays;
+  Widget _buildProjectItem(Project project) {
+    int daysRemaining = project.deadline.difference(DateTime.now()).inDays;
     bool isUrgent = daysRemaining <= 1;
 
     return TweenAnimationBuilder<double>(
@@ -370,7 +378,22 @@ class _ProjectPageState extends State<ProjectPage>
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProjectDetailPage(
-                      projectData: project,
+                      projectData: {
+                        'title': project.judul,
+                        'color': primaryColor,
+                        'progress': project.completedChecklists /
+                            project.checklists.length,
+                        'deadline': project.deadline,
+                        'description': project.deskripsi,
+                        'status': project.status,
+                        'tasks': project.checklists
+                            .map((checklist) => {
+                                  'title': checklist.judul,
+                                  'isCompleted': checklist.subChecklists
+                                      .every((sub) => sub.completed == 1),
+                                })
+                            .toList(),
+                      },
                     ),
                   ),
                 );
@@ -390,12 +413,12 @@ class _ProjectPageState extends State<ProjectPage>
                   border: isUrgent
                       ? Border.all(color: const Color(0xFFFF5252), width: 2)
                       : Border.all(
-                          color: project['color'].withOpacity(0.2),
+                          color: primaryColor.withOpacity(0.2),
                           width: 1,
                         ),
                   boxShadow: [
                     BoxShadow(
-                      color: project['color'].withOpacity(0.1),
+                      color: primaryColor.withOpacity(0.1),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -411,8 +434,8 @@ class _ProjectPageState extends State<ProjectPage>
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                project['color'],
-                                project['color'].withOpacity(0.8),
+                                primaryColor,
+                                primaryColor.withOpacity(0.8),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -420,7 +443,7 @@ class _ProjectPageState extends State<ProjectPage>
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: project['color'].withOpacity(0.3),
+                                color: primaryColor.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -438,7 +461,7 @@ class _ProjectPageState extends State<ProjectPage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                project['title'],
+                                project.judul,
                                 style: TextStyle(
                                   color: textColor,
                                   fontSize: 18,
@@ -446,15 +469,6 @@ class _ProjectPageState extends State<ProjectPage>
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              // const SizedBox(height: 4),
-                              // Text(
-                              //   project['type'],
-                              //   style: TextStyle(
-                              //     color: secondaryTextColor,
-                              //     fontSize: 14,
-                              //     letterSpacing: 0.3,
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
@@ -464,13 +478,13 @@ class _ProjectPageState extends State<ProjectPage>
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: project['color'].withOpacity(0.2),
+                              color: primaryColor.withOpacity(0.2),
                               width: 1,
                             ),
                           ),
                           child: Icon(
                             Icons.chevron_right_rounded,
-                            color: project['color'],
+                            color: primaryColor,
                             size: 24,
                           ),
                         ),
@@ -497,13 +511,13 @@ class _ProjectPageState extends State<ProjectPage>
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: project['color'].withOpacity(0.1),
+                                color: primaryColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                '${(project['progress'] * 100).toInt()}%',
+                                '${(project.completedChecklists / project.checklists.length * 100).toInt()}%',
                                 style: TextStyle(
-                                  color: project['color'],
+                                  color: primaryColor,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -517,19 +531,20 @@ class _ProjectPageState extends State<ProjectPage>
                             Container(
                               height: 8,
                               decoration: BoxDecoration(
-                                color: project['color'].withOpacity(0.2),
+                                color: primaryColor.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
                             FractionallySizedBox(
-                              widthFactor: project['progress'].toDouble(),
+                              widthFactor: project.completedChecklists /
+                                  project.checklists.length,
                               child: Container(
                                 height: 8,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      project['color'],
-                                      project['color'].withOpacity(0.8),
+                                      primaryColor,
+                                      primaryColor.withOpacity(0.8),
                                     ],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
@@ -537,7 +552,7 @@ class _ProjectPageState extends State<ProjectPage>
                                   borderRadius: BorderRadius.circular(4),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: project['color'].withOpacity(0.3),
+                                      color: primaryColor.withOpacity(0.3),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     ),
@@ -561,12 +576,12 @@ class _ProjectPageState extends State<ProjectPage>
                           decoration: BoxDecoration(
                             color: isUrgent
                                 ? const Color(0xFFFF5252).withOpacity(0.1)
-                                : project['color'].withOpacity(0.1),
+                                : primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: isUrgent
                                   ? const Color(0xFFFF5252).withOpacity(0.2)
-                                  : project['color'].withOpacity(0.2),
+                                  : primaryColor.withOpacity(0.2),
                               width: 1,
                             ),
                           ),
@@ -577,7 +592,7 @@ class _ProjectPageState extends State<ProjectPage>
                                 size: 16,
                                 color: isUrgent
                                     ? const Color(0xFFFF5252)
-                                    : project['color'],
+                                    : primaryColor,
                               ),
                               const SizedBox(width: 6),
                               Text(
@@ -585,7 +600,7 @@ class _ProjectPageState extends State<ProjectPage>
                                 style: TextStyle(
                                   color: isUrgent
                                       ? const Color(0xFFFF5252)
-                                      : project['color'],
+                                      : primaryColor,
                                   fontSize: 13,
                                   fontWeight: isUrgent
                                       ? FontWeight.w600
@@ -604,7 +619,7 @@ class _ProjectPageState extends State<ProjectPage>
                             color: surfaceColor,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: project['color'].withOpacity(0.2),
+                              color: primaryColor.withOpacity(0.2),
                               width: 1,
                             ),
                           ),
@@ -613,13 +628,13 @@ class _ProjectPageState extends State<ProjectPage>
                               Icon(
                                 Icons.task_alt_rounded,
                                 size: 16,
-                                color: project['color'],
+                                color: primaryColor,
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                '${(project['tasks'] as List).where((task) => task['isCompleted'] == true).length}/${(project['tasks'] as List).length} Tasks',
+                                '${project.completedChecklists}/${project.checklists.length} Tasks',
                                 style: TextStyle(
-                                  color: project['color'],
+                                  color: primaryColor,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -630,41 +645,6 @@ class _ProjectPageState extends State<ProjectPage>
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // Wrap(
-                    //   spacing: 8,
-                    //   runSpacing: 8,
-                    //   children: (project['tags'] as List<String>).map((tag) {
-                    //     return Container(
-                    //       padding: const EdgeInsets.symmetric(
-                    //         horizontal: 12,
-                    //         vertical: 6,
-                    //       ),
-                    //       decoration: BoxDecoration(
-                    //         gradient: LinearGradient(
-                    //           colors: [
-                    //             accentColor.withOpacity(0.2),
-                    //             primaryColor.withOpacity(0.2),
-                    //           ],
-                    //           begin: Alignment.topLeft,
-                    //           end: Alignment.bottomRight,
-                    //         ),
-                    //         borderRadius: BorderRadius.circular(12),
-                    //         border: Border.all(
-                    //           color: accentColor.withOpacity(0.2),
-                    //           width: 1,
-                    //         ),
-                    //       ),
-                    //       child: Text(
-                    //         tag,
-                    //         style: TextStyle(
-                    //           color: textColor.withOpacity(0.9),
-                    //           fontSize: 12,
-                    //           fontWeight: FontWeight.w500,
-                    //         ),
-                    //       ),
-                    //     );
-                    //   }).toList(),
-                    // ),
                   ],
                 ),
               ),
@@ -681,65 +661,79 @@ class _ProjectPageState extends State<ProjectPage>
       backgroundColor: backgroundColor,
       appBar: buildAppBar(),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    _buildHeader(),
-                    const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...filteredProjects
-                              .map((project) => _buildProjectItem(project)),
-                          if (filteredProjects.isEmpty)
-                            Center(
-                              child: Container(
-                                margin: const EdgeInsets.all(30),
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: surfaceColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: accentColor.withOpacity(0.2),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.search_off_rounded,
-                                      color: textColor.withOpacity(0.5),
-                                      size: 48,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Tidak ada project yang ditemukan',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: textColor.withOpacity(0.7),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
+        child: Consumer<ProjectProvider>(
+          builder: (context, projectProvider, child) {
+            if (projectProvider.loading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                ),
+              );
+            }
+
+            final projects = projectProvider.projects;
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        _buildHeader(),
+                        const SizedBox(height: 24),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...projects
+                                  .map((project) => _buildProjectItem(project)),
+                              if (projects.isEmpty)
+                                Center(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(30),
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      color: surfaceColor,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: accentColor.withOpacity(0.2),
+                                        width: 1,
                                       ),
                                     ),
-                                  ],
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.search_off_rounded,
+                                          color: textColor.withOpacity(0.5),
+                                          size: 48,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'Tidak ada project yang ditemukan',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: textColor.withOpacity(0.7),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                        ],
-                      ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           },
         ),

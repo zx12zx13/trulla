@@ -21,9 +21,12 @@ class ApiService {
       },
     );
 
+    print('Response goten, ' + response.statusCode.toString());
+
     final decodedResponse = utf8.decode(response.bodyBytes);
     if (response.statusCode == 401) {
       prefs.remove('token');
+      print('Token expired');
       if (context.mounted) {
         _redirectToLogin(context);
       }
@@ -86,10 +89,9 @@ class ApiService {
   }
 
   void _redirectToLogin(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),
-      (Route<dynamic> route) => false,
     );
   }
 }

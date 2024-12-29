@@ -18,10 +18,15 @@ class ProjectProvider extends ChangeNotifier {
   Future<void> fetchProjects(BuildContext context) async {
     setLoading(true);
     // Fetch projects from API
-    final fetchedProjects = await _apiService.getRequest('/projects', context);
+    final fetchedProjects = await _apiService.getRequest('/project', context);
     // Convert the fetched data to Project model
-    final data = fetchedProjects.data as List;
-    _projects = data.map((i) => Project.fromJson(i)).toList();
+    if (fetchedProjects.data['data'] is List) {
+      final data = fetchedProjects.data['data'] as List<dynamic>;
+      _projects =
+          data.map((i) => Project.fromJson(i as Map<String, dynamic>)).toList();
+    } else {
+      _projects = [];
+    }
     setLoading(false);
   }
 }
