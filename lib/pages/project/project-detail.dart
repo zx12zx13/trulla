@@ -306,7 +306,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         children: [
           _buildTab(0, Icons.edit_note, 'Edit'),
           const SizedBox(width: 12),
-          _buildTab(1, Icons.print_outlined, 'Description'),
+          _buildTab(1, Icons.print_outlined, 'Notes'),
           const SizedBox(width: 12),
           _buildTab(2, Icons.folder_outlined, 'File'),
         ],
@@ -950,14 +950,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     ),
                   ),
                 ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Saya merasa sangat bahagia, hahahahaha',
-              style: TextStyle(
-                color: textColor,
-                fontSize: 14,
               ),
             ),
           ],
