@@ -128,12 +128,6 @@ class _ProjectPageState extends State<ProjectPage>
                 .toString()
                 .toLowerCase()
                 .contains(query.toLowerCase()))
-            // project['type']
-            //     .toString()
-            //     .toLowerCase()
-            //     .contains(query.toLowerCase()) ||
-            // project['tags'].any((tag) =>
-            //     tag.toString().toLowerCase().contains(query.toLowerCase())))
             .toList();
       }
       _sortProjectsByDeadline();

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trulla/providers/auth/login_provider.dart';
 import 'package:trulla/providers/auth/register_provider.dart';
+import 'package:trulla/providers/navigation/project_provider.dart';
 import 'widget/navbar.dart';
 import 'pages/opening/welcome_page.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => RegisterProvider()),
+        ChangeNotifierProvider(create: (context) => ProjectProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

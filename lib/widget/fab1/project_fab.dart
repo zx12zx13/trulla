@@ -35,16 +35,6 @@ class ProjectFAB extends StatelessWidget {
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
     DateTime selectedDate = DateTime.now().add(const Duration(days: 7));
-    List<String> selectedTags = [];
-
-    final availableTags = [
-      'Design',
-      'Development',
-      'Mobile',
-      'Web',
-      'Server',
-      'Testing'
-    ];
 
     showDialog(
       context: context,
