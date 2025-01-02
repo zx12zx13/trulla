@@ -18,6 +18,8 @@ class ProjectPage extends StatefulWidget {
 class _ProjectPageState extends State<ProjectPage>
     with SingleTickerProviderStateMixin {
   bool _isSearching = false;
+  int _selectedIndex = 0;
+
   final TextEditingController _searchController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -31,49 +33,6 @@ class _ProjectPageState extends State<ProjectPage>
   final Color secondaryTextColor = const Color(0xFFB0BEC5);
 
   List<Project> filteredProjects = [];
-
-  // // Your existing dummy data
-  // final List<Map<String, dynamic>> projects = [
-  //   {
-  //     'title': 'UI Design App',
-  //     'color': const Color(0xFF2196F3),
-  //     'progress': 0.8,
-  //     'deadline': DateTime.now().add(const Duration(days: 5)),
-  //     'description': 'Mobile app UI design project',
-  //     'status': 'ongoing',
-  //     'tasks': [
-  //       {'title': 'Design System', 'isCompleted': true},
-  //       {'title': 'Wireframes', 'isCompleted': true},
-  //       {'title': 'High-fidelity Design', 'isCompleted': false},
-  //     ],
-  //   },
-  //   {
-  //     'title': 'Backend Development',
-  //     'color': const Color(0xFF4CAF50),
-  //     'progress': 1.0,
-  //     'deadline': DateTime.now().add(const Duration(days: 7)),
-  //     'description': 'Server development and API integration',
-  //     'status': 'completed',
-  //     'tasks': [
-  //       {'title': 'API Design', 'isCompleted': true},
-  //       {'title': 'Database Setup', 'isCompleted': true},
-  //       {'title': 'Server Configuration', 'isCompleted': true},
-  //     ],
-  //   },
-  //   {
-  //     'title': 'Mobile Development',
-  //     'color': const Color(0xFFFFC107),
-  //     'progress': 0.3,
-  //     'deadline': DateTime.now().add(const Duration(days: 1)),
-  //     'description': 'Flutter mobile app development',
-  //     'status': 'ongoing',
-  //     'tasks': [
-  //       {'title': 'Project Setup', 'isCompleted': true},
-  //       {'title': 'Core Features', 'isCompleted': false},
-  //       {'title': 'Testing', 'isCompleted': false},
-  //     ],
-  //   }
-  // ];
 
   final List<Map<String, dynamic>> notifications = [
     {
@@ -126,20 +85,110 @@ class _ProjectPageState extends State<ProjectPage>
     });
   }
 
-  void _filterProjects(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        filteredProjects = List.from(context.read<ProjectProvider>().projects);
-      } else {
-        filteredProjects = context
-            .read<ProjectProvider>()
-            .projects
-            .where((project) =>
-                project.judul.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
-      _sortProjectsByDeadline();
-    });
+  String getSelectedTabText() {
+    switch (_selectedIndex) {
+      case 0:
+        return 'all';
+      case 1:
+        return 'ongoing';
+      case 2:
+        return 'completed';
+      case 3:
+        return 'cancelled';
+      default:
+        return 'all';
+    }
+  }
+
+  // void _filterProjects(String query) {
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       filteredProjects = List.from(context.read<ProjectProvider>().projects);
+  //     } else {
+  //       filteredProjects = context
+  //           .read<ProjectProvider>()
+  //           .projects
+  //           .where((project) =>
+  //               project.judul.toLowerCase().contains(query.toLowerCase()))
+  //           .toList();
+  //     }
+  //     _sortProjectsByDeadline();
+  //   });
+  // }
+
+  Widget _buildTabRow() {
+    return Container(
+      height: 45,
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _buildTab('All', 0, Icons.grid_view_rounded),
+          _buildTab('On Going', 1, Icons.timer_outlined),
+          _buildTab('Completed', 2, Icons.check_circle_outline_rounded),
+          _buildTab('Canceled', 3, Icons.cancel_outlined),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(String text, int index, IconData icon) {
+    final isSelected = _selectedIndex == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+          print(getSelectedTabText());
+          context
+              .read<ProjectProvider>()
+              .filterProjects(_searchController.text, getSelectedTabText());
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [primaryColor, accentColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected ? null : surfaceColor,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: primaryColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              text,
+              style: TextStyle(
+                color:
+                    isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   AppBar buildAppBar() {
@@ -154,7 +203,9 @@ class _ProjectPageState extends State<ProjectPage>
             setState(() {
               _isSearching = false;
               _searchController.clear();
-              _filterProjects('');
+              context
+                  .read<ProjectProvider>()
+                  .filterProjects('', getSelectedTabText());
             });
           },
         ),
@@ -177,7 +228,9 @@ class _ProjectPageState extends State<ProjectPage>
                 color: textColor.withOpacity(0.5),
               ),
             ),
-            onChanged: _filterProjects,
+            onChanged: (string) => context
+                .read<ProjectProvider>()
+                .filterProjects(string, getSelectedTabText()),
           ),
         ),
       );
@@ -663,6 +716,8 @@ class _ProjectPageState extends State<ProjectPage>
       body: SafeArea(
         child: Consumer<ProjectProvider>(
           builder: (context, projectProvider, child) {
+            var projects = projectProvider.filteredProjects;
+
             if (projectProvider.loading) {
               return Center(
                 child: CircularProgressIndicator(
@@ -670,8 +725,6 @@ class _ProjectPageState extends State<ProjectPage>
                 ),
               );
             }
-
-            final projects = projectProvider.projects;
 
             return LayoutBuilder(
               builder: (context, constraints) {
@@ -690,6 +743,7 @@ class _ProjectPageState extends State<ProjectPage>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              _buildTabRow(),
                               ...projects
                                   .map((project) => _buildProjectItem(project)),
                               if (projects.isEmpty)

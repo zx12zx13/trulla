@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage>
   void _filterProjects(String query) {
     setState(() {
       List<Map<String, dynamic>> results = query.isEmpty
-          ? List<Map<String, dynamic>>.from(projectsData)
+          ? projectsData
           : projectsData
               .where((project) =>
                   project['title']

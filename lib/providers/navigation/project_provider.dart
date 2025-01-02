@@ -15,6 +15,8 @@ class ProjectProvider extends ChangeNotifier {
   List<Project> _projects = [];
   List<Project> get projects => _projects;
 
+  List<Project> filteredProjects = [];
+
   Future<void> fetchProjects(BuildContext context) async {
     setLoading(true);
     // Fetch projects from API
@@ -27,6 +29,35 @@ class ProjectProvider extends ChangeNotifier {
     } else {
       _projects = [];
     }
+    filteredProjects = List<Project>.from(_projects);
     setLoading(false);
+  }
+
+  void filterProjects(String query, String status) {
+    filteredProjects = _projects;
+
+    if (query.isNotEmpty) {
+      filteredProjects = _projects
+          .where((project) =>
+              project.judul.toLowerCase().contains(query.toLowerCase()) ||
+              project.deskripsi.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+
+    if (status != 'all') {
+      filteredProjects =
+          _projects.where((project) => project.status == status).toList();
+    }
+
+    filteredProjects.sort((a, b) {
+      final deadlineA = a.deadline;
+      final deadlineB = b.deadline;
+      return deadlineA.compareTo(deadlineB);
+    });
+
+    print(filteredProjects);
+    print(projects.length);
+
+    notifyListeners();
   }
 }
