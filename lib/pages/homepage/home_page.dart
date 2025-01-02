@@ -827,43 +827,43 @@ class _HomePageState extends State<HomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildGreeting(),
-                      _buildTabRow(),
-                      ...filteredProjects
-                          .map((project) => _buildProjectCard(project)),
-                      if (filteredProjects.isEmpty)
-                        Center(
-                          child: Container(
-                            margin: const EdgeInsets.all(30),
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: surfaceColor,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.search_off_rounded,
-                                  color: Colors.white.withOpacity(0.5),
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Tidak ada proyek yang ditemukan',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      // _buildTabRow(),
+                      // ...filteredProjects
+                      //     .map((project) => _buildProjectCard(project)),
+                      // if (filteredProjects.isEmpty)
+                      //   Center(
+                      //     child: Container(
+                      //       margin: const EdgeInsets.all(30),
+                      //       padding: const EdgeInsets.all(20),
+                      //       decoration: BoxDecoration(
+                      //         color: surfaceColor,
+                      //         borderRadius: BorderRadius.circular(16),
+                      //         border: Border.all(
+                      //           color: accentColor.withOpacity(0.2),
+                      //           width: 1,
+                      //         ),
+                      //       ),
+                      //       child: Column(
+                      //         children: [
+                      //           Icon(
+                      //             Icons.search_off_rounded,
+                      //             color: Colors.white.withOpacity(0.5),
+                      //             size: 48,
+                      //           ),
+                      //           const SizedBox(height: 16),
+                      //           Text(
+                      //             'Tidak ada proyek yang ditemukan',
+                      //             textAlign: TextAlign.center,
+                      //             style: TextStyle(
+                      //               color: Colors.white.withOpacity(0.7),
+                      //               fontSize: 16,
+                      //               fontWeight: FontWeight.w500,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
                       const QuoteFooter(),
                     ],
                   ),
