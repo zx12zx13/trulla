@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trulla/pages/opening/login_page.dart';
 import 'package:trulla/service/api_service.dart';
 import 'package:trulla/utils/api_response.dart';
 
@@ -18,6 +19,26 @@ class EditProfilProvider extends ChangeNotifier {
     email = prefs.getString('email') ?? '';
 
     notifyListeners();
+  }
+
+  // Logout
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    prefs.remove('name');
+    prefs.remove('email');
+
+    if (context.mounted) {
+      await _apiService.getRequest('/auth/logout', context);
+    }
+
+    if (context.mounted) {
+      // Redirect to login page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
   }
 
   Future<void> updateProfil({
