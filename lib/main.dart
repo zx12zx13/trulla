@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trulla/providers/auth/edit_profil_provider.dart';
 import 'package:trulla/providers/auth/login_provider.dart';
 import 'package:trulla/providers/auth/register_provider.dart';
 import 'package:trulla/providers/navigation/project_provider.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => LoginProvider()),
         ChangeNotifierProvider(create: (context) => RegisterProvider()),
         ChangeNotifierProvider(create: (context) => ProjectProvider()),
+        ChangeNotifierProvider(create: (context) => EditProfilProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import '../pages/homepage/home_page.dart';
 import '../pages/profile/profile.dart';
-import '../pages/group/view-group-team.dart';
+// import '../pages/group/view-group-team.dart';
 import '../pages/project/project-page.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 
@@ -20,7 +20,7 @@ class _NavBarControllerState extends State<NavBarController> {
   final List<Widget> _pages = [
     const HomePage(),
     const ProjectPage(),
-    const ListTeamPage(),
+    // const ListTeamPage(),
     const ProfilePage(),
   ];
 
@@ -56,7 +56,7 @@ class CustomNavBar extends StatelessWidget {
       activeIcons: const [
         Icon(Icons.home_filled, color: Color(0xFF1A1A1A)),
         Icon(Icons.tag, color: Color(0xFF1A1A1A)),
-        Icon(Icons.groups, color: Color(0xFF1A1A1A)),
+        // Icon(Icons.groups, color: Color(0xFF1A1A1A)),
         Icon(Icons.person, color: Color(0xFF1A1A1A)),
       ],
       inactiveIcons: const [
@@ -74,13 +74,13 @@ class CustomNavBar extends StatelessWidget {
             color: Colors.white70,
           ),
         ),
-        Text(
-          "Group",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white70,
-          ),
-        ),
+        // Text(
+        //   "Group",
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //     color: Colors.white70,
+        //   ),
+        // ),
         Text(
           "Profile",
           style: TextStyle(
