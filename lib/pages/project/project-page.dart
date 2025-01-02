@@ -139,7 +139,6 @@ class _ProjectPageState extends State<ProjectPage>
       onTap: () {
         setState(() {
           _selectedIndex = index;
-          print(getSelectedTabText());
           context
               .read<ProjectProvider>()
               .filterProjects(_searchController.text, getSelectedTabText());

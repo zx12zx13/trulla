@@ -55,9 +55,6 @@ class ProjectProvider extends ChangeNotifier {
       return deadlineA.compareTo(deadlineB);
     });
 
-    print(filteredProjects);
-    print(projects.length);
-
     notifyListeners();
   }
 }
