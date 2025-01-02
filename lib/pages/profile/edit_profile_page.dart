@@ -2,8 +2,18 @@
 
 import 'package:flutter/material.dart';
 
-class EditProfilePage extends StatelessWidget {
+class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
+
+  @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -115,16 +125,16 @@ class EditProfilePage extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      _buildTextField('Name', Icons.person, 'Marino Hermawan'),
+                      _buildTextField('Name', Icons.person, nameController),
+                      const SizedBox(height: 16),
+                      _buildTextField('Email', Icons.email, emailController),
                       const SizedBox(height: 16),
                       _buildTextField(
-                          'Email', Icons.email, 'marino@example.com'),
-                      const SizedBox(height: 16),
-                      _buildTextField('Password', Icons.lock, '',
+                          'Password', Icons.lock, passwordController,
                           isPassword: true),
                       const SizedBox(height: 16),
-                      _buildTextField(
-                          'Confirm Password', Icons.lock_outline, '',
+                      _buildTextField('Confirm Password', Icons.lock_outline,
+                          confirmPasswordController,
                           isPassword: true),
                     ],
                   ),
@@ -163,7 +173,8 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label, IconData icon, String initialValue,
+  Widget _buildTextField(
+      String label, IconData icon, TextEditingController controller,
       {bool isPassword = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -176,7 +187,7 @@ class EditProfilePage extends StatelessWidget {
         ),
       ),
       child: TextField(
-        controller: TextEditingController(text: initialValue),
+        controller: controller,
         obscureText: isPassword,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(

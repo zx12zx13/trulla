@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/providers/auth/edit_profil_provider.dart';
 import 'edit_profile_page.dart';
 import '../opening/welcome_page.dart';
 
@@ -40,6 +42,11 @@ class _ProfilePageState extends State<ProfilePage>
     ));
 
     _animationController.forward();
+
+    // Fetch profile data on start
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EditProfilProvider>().fetchProfil(context);
+    });
   }
 
   Future<void> _handleLogout() async {
@@ -93,143 +100,145 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: backgroundColor,
-          body: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ShaderMask(
-                            shaderCallback: (bounds) => LinearGradient(
-                              colors: [primaryColor, accentColor],
-                            ).createShader(bounds),
-                            child: const Text(
-                              'Profile',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+    return Consumer<EditProfilProvider>(
+      builder: (context, provider, child) => Stack(
+        children: [
+          Scaffold(
+            backgroundColor: backgroundColor,
+            body: FadeTransition(
+              opacity: _fadeAnimation,
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [primaryColor, accentColor],
+                              ).createShader(bounds),
+                              child: const Text(
+                                'Profile',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: surfaceColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: primaryColor.withOpacity(0.2),
-                                width: 1,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: surfaceColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: primaryColor.withOpacity(0.2),
+                                  width: 1,
+                                ),
                               ),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.settings,
-                                color: Colors.white,
-                                size: 24,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.settings,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfilePage(),
+                                    ),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const EditProfilePage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [primaryColor, accentColor],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: primaryColor.withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundColor: surfaceColor,
-                            child: const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Colors.white,
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [primaryColor, accentColor],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: primaryColor.withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: surfaceColor,
+                              child: const Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          _buildProfileCard(),
-                          const SizedBox(height: 20),
-                          _buildLogoutButton(),
-                        ],
+                      const SizedBox(height: 32),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            _buildProfileCard(provider.name, provider.email),
+                            const SizedBox(height: 20),
+                            _buildLogoutButton(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        if (_isLoading)
-          Container(
-            color: Colors.black54,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: surfaceColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'On your way out...',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+          if (_isLoading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'On your way out...',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildProfileCard() {
+  Widget _buildProfileCard(String name, String email) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -256,9 +265,9 @@ class _ProfilePageState extends State<ProfilePage>
       ),
       child: Column(
         children: [
-          _buildInfoTile('Marino Hermawan', Icons.person),
+          _buildInfoTile(name, Icons.person),
           const SizedBox(height: 16),
-          _buildInfoTile('marino@example.com', Icons.email),
+          _buildInfoTile(email, Icons.email),
         ],
       ),
     );
