@@ -206,7 +206,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
             ));
-    ;
   }
 
   Widget _buildTextField(
