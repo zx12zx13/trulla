@@ -151,7 +151,10 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            _buildProfileCard(provider.name, provider.email),
+                            _buildProfileCard(
+                              context.watch<EditProfilProvider>().name,
+                              context.watch<EditProfilProvider>().email,
+                            ),
                             const SizedBox(height: 20),
                             _buildLogoutButton(),
                           ],
