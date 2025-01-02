@@ -886,13 +886,7 @@ class _HomePageState extends State<HomePage>
               },
             ),
             const SizedBox(height: 10),
-            ProjectFAB(
-              onPressed: () {
-                setState(() {
-                  // Project creation logic will be handled in ProjectFAB
-                });
-              },
-            ),
+            const ProjectFAB(),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trulla/model/project_model.dart';
 import 'package:trulla/service/api_service.dart';
+import 'package:trulla/utils/api_response.dart';
 
 class ProjectProvider extends ChangeNotifier {
   bool _loading = false;
@@ -30,6 +31,7 @@ class ProjectProvider extends ChangeNotifier {
       _projects = [];
     }
     filteredProjects = List<Project>.from(_projects);
+    print(filteredProjects);
     setLoading(false);
   }
 
@@ -55,6 +57,44 @@ class ProjectProvider extends ChangeNotifier {
       return deadlineA.compareTo(deadlineB);
     });
 
+    notifyListeners();
+  }
+
+  Future<void> createProject({
+    required String judul,
+    required String deskripsi,
+    required DateTime deadline,
+    required BuildContext context,
+    required Function onSuccess,
+    required Function(String) onError,
+  }) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      ApiResponse response = await _apiService.postRequest(
+        '/project/store_private',
+        {
+          'judul': judul,
+          'deskripsi': deskripsi,
+          'deadline': deadline.toIso8601String(),
+        },
+        context,
+      );
+
+      if (response.statusCode == 201) {
+        if (context.mounted) {
+          await fetchProjects(context);
+        }
+        onSuccess();
+      } else {
+        onError('Failed to create project: ${response.data['message']}');
+      }
+    } catch (e) {
+      onError('An error occurred: $e');
+    }
+
+    _loading = false;
     notifyListeners();
   }
 }

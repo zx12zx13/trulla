@@ -77,14 +77,6 @@ class _ProjectPageState extends State<ProjectPage>
     });
   }
 
-  void _sortProjectsByDeadline() {
-    filteredProjects.sort((a, b) {
-      DateTime deadlineA = a.deadline;
-      DateTime deadlineB = b.deadline;
-      return deadlineA.compareTo(deadlineB);
-    });
-  }
-
   String getSelectedTabText() {
     switch (_selectedIndex) {
       case 0:
@@ -567,7 +559,7 @@ class _ProjectPageState extends State<ProjectPage>
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                '${(project.completedChecklists / project.checklists.length * 100).toInt()}%',
+                                '${(project.checklists.isEmpty ? 0 : project.completedChecklists / project.checklists.length * 100).toInt()}%',
                                 style: TextStyle(
                                   color: primaryColor,
                                   fontSize: 14,
@@ -588,8 +580,10 @@ class _ProjectPageState extends State<ProjectPage>
                               ),
                             ),
                             FractionallySizedBox(
-                              widthFactor: project.completedChecklists /
-                                  project.checklists.length,
+                              widthFactor: project.checklists.isEmpty
+                                  ? 0
+                                  : project.completedChecklists /
+                                      project.checklists.length,
                               child: Container(
                                 height: 8,
                                 decoration: BoxDecoration(
@@ -791,13 +785,9 @@ class _ProjectPageState extends State<ProjectPage>
           },
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: ProjectFAB(
-          onPressed: () {
-            // Project creation logic will be handled in ProjectFAB
-          },
-        ),
+      floatingActionButton: const Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: ProjectFAB(),
       ),
     );
   }
