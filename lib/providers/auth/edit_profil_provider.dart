@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trulla/pages/opening/login_page.dart';
+import 'package:trulla/pages/opening/welcome_page.dart';
 import 'package:trulla/service/api_service.dart';
 import 'package:trulla/utils/api_response.dart';
 
@@ -36,7 +36,7 @@ class EditProfilProvider extends ChangeNotifier {
       // Redirect to login page
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => WelcomePage()),
       );
     }
   }

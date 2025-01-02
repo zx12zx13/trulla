@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trulla/providers/auth/edit_profil_provider.dart';
 import 'edit_profile_page.dart';
-import '../opening/welcome_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -51,49 +50,8 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future<void> _handleLogout() async {
     setState(() => _isLoading = true);
-
-    // Simulate logout process
     await context.read<EditProfilProvider>().logout(context);
-
     setState(() => _isLoading = false);
-
-    // Show success notification
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //     content: Container(
-    //       padding: const EdgeInsets.symmetric(vertical: 8),
-    //       child: const Row(
-    //         children: [
-    //           Icon(Icons.check_circle, color: Colors.white),
-    //           SizedBox(width: 12),
-    //           Text(
-    //             'Successfully exit the application',
-    //             style: TextStyle(color: Colors.white),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //     backgroundColor: Colors.green,
-    //     duration: const Duration(seconds: 3),
-    //     behavior: SnackBarBehavior.floating,
-    //     shape: RoundedRectangleBorder(
-    //       borderRadius: BorderRadius.circular(10),
-    //     ),
-    //     margin: EdgeInsets.only(
-    //       bottom: MediaQuery.of(context).size.height - 100,
-    //       left: 20,
-    //       right: 20,
-    //     ),
-    //   ),
-    // );
-
-    // // Navigate to welcome page
-    // if (!mounted) return;
-    // Navigator.pushAndRemoveUntil(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => WelcomePage()),
-    //   (route) => false,
-    // );
   }
 
   @override
