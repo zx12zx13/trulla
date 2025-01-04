@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trulla/model/project_model.dart';
 import 'package:trulla/service/api_service.dart';
+import 'package:trulla/utils/api_response.dart';
 
 class DetailProjectProvider extends ChangeNotifier {
   bool isLoading = false;
@@ -39,5 +40,25 @@ class DetailProjectProvider extends ChangeNotifier {
     await _apiService.postRequest(
         '/project/update_sub_checklist/$id', {'status': value}, context);
     return true;
+  }
+
+  Future<void> updateDeadline(DateTime deadline, BuildContext context) async {
+    if (_project == null) {
+      return;
+    }
+    ApiResponse response = await _apiService.postRequest(
+        '/project/${_project!.id}/updateDeadline',
+        {'deadline': deadline.toIso8601String()},
+        context);
+
+    if (response.statusCode != 200) {
+      print('Failed to update deadline: ${response.data['message']}');
+      return;
+    }
+
+    print('Deadline updated successfully to ${deadline.toIso8601String()}');
+
+    _project!.deadline = deadline;
+    notifyListeners();
   }
 }

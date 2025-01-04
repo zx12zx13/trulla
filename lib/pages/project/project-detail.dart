@@ -87,6 +87,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               }
 
               _descController.text = project.deskripsi;
+              _selectedDate = project.deadline;
 
               return Column(
                 children: [
@@ -433,7 +434,11 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'Completed',
+                    context
+                            .watch<DetailProjectProvider>()
+                            .project
+                            ?.statusText ??
+                        "",
                     style: TextStyle(
                       color: textColor,
                       fontSize: 12,
@@ -1099,16 +1104,17 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
       );
 
       if (pickedTime != null) {
-        setState(() {
-          _selectedDate = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
-          _selectedTime = pickedTime;
-        });
+        DateTime selectedDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+        print('Update deadline: $selectedDateTime');
+        await context
+            .read<DetailProjectProvider>()
+            .updateDeadline(selectedDateTime, context);
       }
     }
   }

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Project {
   int id;
   String judul;
@@ -26,6 +28,24 @@ class Project {
     return checklists.isEmpty
         ? 0.0 // Mengembalikan nilai default jika checklists kosong
         : (completedChecklists / checklists.length) * 100;
+  }
+
+  // Example: 04 January 2025, 18:00
+  String get formattedDeadline {
+    return DateFormat('dd MMMM yyyy, HH:mm').format(deadline);
+  }
+
+  String get statusText {
+    switch (status) {
+      case 'ongoing':
+        return 'Ongoing';
+      case 'completed':
+        return 'Completed';
+      case 'canceled':
+        return 'Canceled';
+      default:
+        return 'Ongoing';
+    }
   }
 
   Project({
