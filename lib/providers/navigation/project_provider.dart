@@ -20,6 +20,7 @@ class ProjectProvider extends ChangeNotifier {
 
   Future<void> fetchProjects(BuildContext context) async {
     setLoading(true);
+    print('fetchProjects');
     // Fetch projects from API
     final fetchedProjects = await _apiService.getRequest('/project', context);
     // Convert the fetched data to Project model

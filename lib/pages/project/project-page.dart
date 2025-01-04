@@ -417,8 +417,8 @@ class _ProjectPageState extends State<ProjectPage>
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProjectDetailPage(
@@ -426,6 +426,9 @@ class _ProjectPageState extends State<ProjectPage>
                     ),
                   ),
                 );
+                if (context.mounted) {
+                  await context.read<ProjectProvider>().fetchProjects(context);
+                }
               },
               child: Container(
                 padding: const EdgeInsets.all(20),
