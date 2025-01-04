@@ -2,10 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:trulla/model/project_model.dart';
+import 'package:trulla/providers/navigation/detail_project_provider.dart';
 import 'project-note.dart';
 
 class ProjectDetailPage extends StatefulWidget {
-  final Map<String, dynamic> projectData;
+  final Project projectData;
 
   const ProjectDetailPage({
     super.key,
@@ -50,6 +53,12 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     ));
 
     _animationController.forward();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context
+          .read<DetailProjectProvider>()
+          .fetchProject(widget.projectData.id, context);
+    });
   }
 
   @override
@@ -66,30 +75,45 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      _buildProjectInfo(),
-                      const SizedBox(height: 20),
-                      _buildTabSelector(),
-                      const SizedBox(height: 20),
-                      _buildDatePicker(),
-                      const SizedBox(height: 20),
-                      _buildDescriptionField(),
-                      const SizedBox(height: 20),
-                      _buildSelectedView(),
-                      const SizedBox(height: 80), // Space for FAB
-                    ],
+          child: Consumer<DetailProjectProvider>(
+            builder: (context, detailProjectProvider, child) {
+              Project? project = detailProjectProvider.project;
+              if (detailProjectProvider.isLoading || project == null) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
                   ),
-                ),
-              ),
-            ],
+                );
+              }
+
+              _descController.text = project.deskripsi;
+
+              return Column(
+                children: [
+                  _buildHeader(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          _buildProjectInfo(),
+                          const SizedBox(height: 20),
+                          _buildTabSelector(),
+                          const SizedBox(height: 20),
+                          _buildDatePicker(),
+                          const SizedBox(height: 20),
+                          _buildDescriptionField(),
+                          const SizedBox(height: 20),
+                          _buildSelectedView(project),
+                          const SizedBox(height: 80), // Space for FAB
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -156,12 +180,12 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: widget.projectData['color'].withOpacity(0.2),
+            color: Colors.white.withOpacity(0.2),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: widget.projectData['color'].withOpacity(0.1),
+              color: Colors.white.withOpacity(0.1),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -177,8 +201,8 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        widget.projectData['color'],
-                        widget.projectData['color'].withOpacity(0.8),
+                        Colors.white,
+                        Colors.white.withOpacity(0.8),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -186,7 +210,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: widget.projectData['color'].withOpacity(0.3),
+                        color: Colors.white.withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -204,7 +228,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.projectData['title'],
+                        widget.projectData.judul,
                         style: TextStyle(
                           color: textColor,
                           fontSize: 20,
@@ -219,10 +243,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: widget.projectData['color'].withOpacity(0.1),
+                          color: Colors.white.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: widget.projectData['color'].withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.2),
                             width: 1,
                           ),
                         ),
@@ -238,14 +262,14 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               children: [
                 _buildProjectStat(
                   'Progress',
-                  '${(widget.projectData['progress'] * 100).toInt()}%',
-                  widget.projectData['color'],
+                  '${widget.projectData.progress * 100}%',
+                  Colors.white,
                 ),
-                _buildProjectStat(
-                  'Tasks',
-                  '${widget.projectData['tasks'].where((t) => t['isCompleted'] as bool).length}/${widget.projectData['tasks'].length}',
-                  primaryColor,
-                ),
+                // _buildProjectStat(
+                //   'Tasks',
+                //   '${widget.projectData.checklists.where((t) => t['isCompleted'] as bool).length}/${widget.projectData['tasks'].length}',
+                //   primaryColor,
+                // ),
               ],
             ),
           ],
@@ -542,10 +566,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     );
   }
 
-  Widget _buildSelectedView() {
+  Widget _buildSelectedView(Project project) {
     switch (_selectedIndex) {
       case 0:
-        return _buildConfigurationView();
+        return _buildChecklists(project);
       case 1:
         return _buildDetailView();
       case 2:
@@ -555,7 +579,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     }
   }
 
-  Widget _buildConfigurationView() {
+  Widget _buildChecklistItem(Checklist checklist) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
@@ -589,7 +613,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Configuration',
+                  checklist.judul,
                   style: TextStyle(
                     color: textColor,
                     fontSize: 18,
@@ -659,7 +683,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        '${(widget.projectData['progress'] * 100).toInt()}%',
+                        '${checklist.progress * 100}%',
                         style: TextStyle(
                           color: primaryColor,
                           fontSize: 12,
@@ -680,7 +704,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                       ),
                     ),
                     FractionallySizedBox(
-                      widthFactor: widget.projectData['progress'],
+                      widthFactor: checklist.progress,
                       child: Container(
                         height: 8,
                         decoration: BoxDecoration(
@@ -705,9 +729,21 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               ],
             ),
             const SizedBox(height: 20),
-            ...widget.projectData['tasks']
-                .map<Widget>(
-                    (task) => _buildTaskItem(task as Map<String, dynamic>))
+            ...checklist.subChecklists
+                .map<Widget>((task) => _buildTaskItem(task, (checked) async {
+                      bool success = await context
+                          .read<DetailProjectProvider>()
+                          .updateSubChecklist(
+                            task.id,
+                            checked ?? false,
+                            context,
+                          );
+                      if (success) {
+                        setState(() {
+                          task.completed = checked == true ? 1 : 0;
+                        });
+                      }
+                    }))
                 .toList(),
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -736,6 +772,14 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildChecklists(Project project) {
+    return Column(
+      children: project.checklists
+          .map<Widget>((checklist) => _buildChecklistItem(checklist))
+          .toList(),
     );
   }
 
@@ -953,7 +997,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     );
   }
 
-  Widget _buildTaskItem(Map<String, dynamic> task) {
+  Widget _buildTaskItem(SubChecklist sub, void onChanged(bool? value)) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -961,7 +1005,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           Transform.scale(
             scale: 0.9,
             child: Checkbox(
-              value: task['isCompleted'],
+              value: sub.completed == 1,
               activeColor: primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -970,22 +1014,17 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                 color: primaryColor.withOpacity(0.5),
                 width: 1.5,
               ),
-              onChanged: (bool? value) {
-                setState(() {
-                  task['isCompleted'] = value ?? false;
-                });
-              },
+              onChanged: onChanged,
             ),
           ),
           Expanded(
             child: Text(
-              task['title'],
+              sub.text,
               style: TextStyle(
-                color: task['isCompleted']
-                    ? textColor.withOpacity(0.5)
-                    : textColor,
+                color:
+                    sub.completed == 1 ? textColor.withOpacity(0.5) : textColor,
                 fontSize: 14,
-                decoration: task['isCompleted']
+                decoration: sub.completed == 1
                     ? TextDecoration.lineThrough
                     : TextDecoration.none,
               ),

@@ -422,22 +422,7 @@ class _ProjectPageState extends State<ProjectPage>
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProjectDetailPage(
-                      projectData: {
-                        'title': project.judul,
-                        'color': primaryColor,
-                        'progress': project.completedChecklists /
-                            project.checklists.length,
-                        'deadline': project.deadline,
-                        'description': project.deskripsi,
-                        'status': project.status,
-                        'tasks': project.checklists
-                            .map((checklist) => {
-                                  'title': checklist.judul,
-                                  'isCompleted': checklist.subChecklists
-                                      .every((sub) => sub.completed == 1),
-                                })
-                            .toList(),
-                      },
+                      projectData: project,
                     ),
                   ),
                 );
