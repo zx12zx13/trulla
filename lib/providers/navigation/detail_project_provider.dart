@@ -57,11 +57,8 @@ class DetailProjectProvider extends ChangeNotifier {
     setLoading(false);
 
     if (response.statusCode != 200) {
-      print('Failed to update deadline: ${response.data['message']}');
       return;
     }
-
-    print('Deadline updated successfully to ${deadline.toIso8601String()}');
 
     _project!.deadline = deadline;
     notifyListeners();
@@ -80,11 +77,8 @@ class DetailProjectProvider extends ChangeNotifier {
     setLoading(false);
 
     if (response.statusCode != 200) {
-      print('Failed to update description: ${response.data['message']}');
       return;
     }
-
-    print('Description updated successfully to $deskripsi');
 
     _project!.deskripsi = deskripsi;
     notifyListeners();
