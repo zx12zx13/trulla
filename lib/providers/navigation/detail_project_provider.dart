@@ -31,23 +31,42 @@ class DetailProjectProvider extends ChangeNotifier {
     setLoading(false);
   }
 
+  Future<ApiResponse> addChecklist(String judul, BuildContext context) async {
+    if (_project == null) {
+      return ApiResponse(statusCode: 400, data: {
+        'message': 'Project not found',
+      });
+    }
+
+    ApiResponse response = await _apiService.postRequest(
+      '/project/addChecklist/${_project!.id}',
+      {
+        'judul': judul,
+      },
+      context,
+    );
+
+    if (response.statusCode == 201) {
+      Checklist newChecklist = Checklist.fromJson(response.data['data']);
+      _project!.checklists.add(newChecklist);
+      notifyListeners();
+    }
+
+    return response;
+  }
+
   Future<bool> updateSubChecklist(
       int id, bool value, BuildContext context) async {
     if (_project == null) {
       return false;
     }
 
-    print('updateSubChecklist');
-
     ApiResponse response = await _apiService.postRequest(
         '/project/update_sub_checklist/$id', {'status': value}, context);
 
     if (response.statusCode != 200) {
-      print('updateSubChecklist error');
       return false;
     }
-
-    print('updateSubChecklist success');
 
     return true;
   }

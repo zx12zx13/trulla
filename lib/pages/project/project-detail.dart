@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:trulla/model/project_model.dart';
 import 'package:trulla/providers/navigation/detail_project_provider.dart';
+import 'package:trulla/widget/fab1/add_checkbox_fab.dart';
+import 'package:trulla/widget/fab1/add_note_fab.dart';
 import 'project-note.dart';
 
 class ProjectDetailPage extends StatefulWidget {
@@ -119,7 +121,8 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           ),
         ),
       ),
-      floatingActionButton: _buildFAB(),
+      floatingActionButton:
+          _selectedIndex == 0 ? const AddCheckboxFAB() : const AddNoteFAB(),
     );
   }
 
