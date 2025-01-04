@@ -114,4 +114,21 @@ class DetailProjectProvider extends ChangeNotifier {
     _project!.deskripsi = deskripsi;
     notifyListeners();
   }
+
+  Future<void> deleteChecklist(int id, BuildContext context) async {
+    if (_project == null) {
+      return;
+    }
+    setLoading(true);
+    ApiResponse response =
+        await _apiService.getRequest('/project/delete_checklist/$id', context);
+    setLoading(false);
+
+    if (response.statusCode != 200) {
+      return;
+    }
+
+    _project!.checklists.removeWhere((checklist) => checklist.id == id);
+    notifyListeners();
+  }
 }

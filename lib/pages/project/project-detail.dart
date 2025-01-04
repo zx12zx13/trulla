@@ -692,10 +692,46 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                           width: 1,
                         ),
                       ),
-                      child: Icon(
-                        Icons.delete_outline,
-                        color: textColor,
-                        size: 20,
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Hapus Checklist'),
+                                content: Text(
+                                  'Anda yakin ingin menghapus checklist "${checklist.judul}"?',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Batal'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await context
+                                          .read<DetailProjectProvider>()
+                                          .deleteChecklist(
+                                              checklist.id, context);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Hapus'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: textColor,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ],
