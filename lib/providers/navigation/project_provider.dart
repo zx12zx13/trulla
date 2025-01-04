@@ -31,7 +31,6 @@ class ProjectProvider extends ChangeNotifier {
       _projects = [];
     }
     filteredProjects = List<Project>.from(_projects);
-    print(filteredProjects);
     setLoading(false);
   }
 

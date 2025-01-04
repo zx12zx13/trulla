@@ -27,7 +27,7 @@ class Project {
   double get progress {
     return checklists.isEmpty
         ? 0.0 // Mengembalikan nilai default jika checklists kosong
-        : (completedChecklists / checklists.length) * 100;
+        : (completedChecklists / checklists.length);
   }
 
   // Example: 04 January 2025, 18:00
@@ -92,7 +92,7 @@ class Checklist {
   double get progress {
     return subChecklists.isEmpty
         ? 0.0 // Mengembalikan nilai default jika subChecklists kosong
-        : (completedSubChecklists / subChecklists.length) * 100;
+        : (completedSubChecklists / subChecklists.length);
   }
 
   Checklist({

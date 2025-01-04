@@ -37,8 +37,18 @@ class DetailProjectProvider extends ChangeNotifier {
       return false;
     }
 
-    await _apiService.postRequest(
+    print('updateSubChecklist');
+
+    ApiResponse response = await _apiService.postRequest(
         '/project/update_sub_checklist/$id', {'status': value}, context);
+
+    if (response.statusCode != 200) {
+      print('updateSubChecklist error');
+      return false;
+    }
+
+    print('updateSubChecklist success');
+
     return true;
   }
 

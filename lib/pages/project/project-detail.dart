@@ -1038,7 +1038,8 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     );
   }
 
-  Widget _buildTaskItem(SubChecklist sub, void onChanged(bool? value)) {
+  Widget _buildTaskItem(
+      SubChecklist sub, void Function(bool? value) onChanged) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
