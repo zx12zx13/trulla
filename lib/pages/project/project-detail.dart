@@ -24,7 +24,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   int _selectedIndex = 0;
   final TextEditingController _descController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  final TimeOfDay _selectedTime = TimeOfDay.now();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -88,6 +88,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
 
               _descController.text = project.deskripsi;
               _selectedDate = project.deadline;
+              // on change description;
 
               return Column(
                 children: [
@@ -564,6 +565,41 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                 ),
               ),
               maxLines: 3,
+            ),
+            const SizedBox(height: 16),
+            // save button
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () async {
+                  print('Save button clicked');
+                  await context
+                      .read<DetailProjectProvider>()
+                      .updateDeskripsi(_descController.text, context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [primaryColor, accentColor],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -1111,7 +1147,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           pickedTime.hour,
           pickedTime.minute,
         );
-        print('Update deadline: $selectedDateTime');
         await context
             .read<DetailProjectProvider>()
             .updateDeadline(selectedDateTime, context);

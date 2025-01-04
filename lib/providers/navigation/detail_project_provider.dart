@@ -46,10 +46,15 @@ class DetailProjectProvider extends ChangeNotifier {
     if (_project == null) {
       return;
     }
+
+    setLoading(true);
+
     ApiResponse response = await _apiService.postRequest(
         '/project/${_project!.id}/updateDeadline',
         {'deadline': deadline.toIso8601String()},
         context);
+
+    setLoading(false);
 
     if (response.statusCode != 200) {
       print('Failed to update deadline: ${response.data['message']}');
@@ -59,6 +64,29 @@ class DetailProjectProvider extends ChangeNotifier {
     print('Deadline updated successfully to ${deadline.toIso8601String()}');
 
     _project!.deadline = deadline;
+    notifyListeners();
+  }
+
+  Future<void> updateDeskripsi(String deskripsi, BuildContext context) async {
+    if (_project == null) {
+      return;
+    }
+    setLoading(true);
+    ApiResponse response = await _apiService.postRequest(
+        '/project/${_project!.id}/updateDeskripsi',
+        {'deskripsi': deskripsi},
+        context);
+
+    setLoading(false);
+
+    if (response.statusCode != 200) {
+      print('Failed to update description: ${response.data['message']}');
+      return;
+    }
+
+    print('Description updated successfully to $deskripsi');
+
+    _project!.deskripsi = deskripsi;
     notifyListeners();
   }
 }
