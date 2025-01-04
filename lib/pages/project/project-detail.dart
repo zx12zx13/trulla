@@ -7,7 +7,6 @@ import 'package:trulla/model/project_model.dart';
 import 'package:trulla/providers/navigation/detail_project_provider.dart';
 import 'package:trulla/widget/fab1/add_checkbox_fab.dart';
 import 'package:trulla/widget/fab1/add_note_fab.dart';
-import 'project-note.dart';
 
 class ProjectDetailPage extends StatefulWidget {
   final Project projectData;
@@ -328,8 +327,8 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           _buildTab(0, Icons.edit_note, 'Edit'),
           const SizedBox(width: 12),
           _buildTab(1, Icons.print_outlined, 'Notes'),
-          const SizedBox(width: 12),
-          _buildTab(2, Icons.folder_outlined, 'File'),
+          // const SizedBox(width: 12),
+          // _buildTab(2, Icons.folder_outlined, 'File'),
         ],
       ),
     );
@@ -625,7 +624,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
 
   Widget _buildChecklistItem(Checklist checklist) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -821,9 +820,11 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
 
   Widget _buildChecklists(Project project) {
     return Column(
-      children: project.checklists
-          .map<Widget>((checklist) => _buildChecklistItem(checklist))
-          .toList(),
+      children: [
+        ...project.checklists
+            .map<Widget>((checklist) => _buildChecklistItem(checklist))
+            .toList(),
+      ],
     );
   }
 
@@ -1076,27 +1077,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFAB() {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).padding.bottom + 10,
-      ),
-      child: FloatingActionButton(
-        backgroundColor: primaryColor,
-        elevation: 8,
-        child: const Icon(Icons.add, size: 24),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ProjectNotePage(),
-            ),
-          );
-        },
       ),
     );
   }

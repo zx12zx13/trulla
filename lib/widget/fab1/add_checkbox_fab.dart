@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trulla/providers/navigation/detail_project_provider.dart';
 import 'package:trulla/providers/navigation/project_provider.dart';
+import 'package:trulla/utils/api_response.dart';
 
 class AddCheckboxFAB extends StatefulWidget {
   const AddCheckboxFAB({
@@ -17,14 +18,18 @@ class AddCheckboxFAB extends StatefulWidget {
 class _AddCheckboxFABState extends State<AddCheckboxFAB> {
   final judulController = TextEditingController();
 
-  void addChecklist() {
+  Future<void> addChecklist() async {
     final judul = judulController.text.trim();
 
+    print(judul);
+
     if (judul.isNotEmpty) {
-      context.read<DetailProjectProvider>().addChecklist(
-            judul,
-            context,
-          );
+      ApiResponse response =
+          await context.read<DetailProjectProvider>().addChecklist(
+                judul,
+                context,
+              );
+
       Navigator.pop(context);
     }
   }
@@ -36,7 +41,7 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
       width: 60, // Menyamakan ukuran container
       margin: const EdgeInsets.only(right: 8),
       child: FloatingActionButton(
-        heroTag: 'addProject',
+        heroTag: 'addChecklist',
         backgroundColor: const Color(0xFF2196F3),
         elevation: 4,
         highlightElevation: 8,
@@ -54,7 +59,7 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
     showDialog(
       context: context,
       builder: (context) {
-        return Consumer<ProjectProvider>(
+        return Consumer<DetailProjectProvider>(
           builder: (context, provider, child) {
             return AlertDialog(
               backgroundColor: const Color(0xFF242938),
@@ -102,7 +107,7 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2196F3),
                   ),
-                  child: provider.loading
+                  child: provider.isLoading
                       ? const CircularProgressIndicator()
                       : const Text('Save'),
                 ),

@@ -39,12 +39,14 @@ class DetailProjectProvider extends ChangeNotifier {
     }
 
     ApiResponse response = await _apiService.postRequest(
-      '/project/addChecklist/${_project!.id}',
+      '/project/add_checklist/${_project!.id}',
       {
         'judul': judul,
       },
       context,
     );
+
+    print(response.data);
 
     if (response.statusCode == 201) {
       Checklist newChecklist = Checklist.fromJson(response.data['data']);

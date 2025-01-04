@@ -111,9 +111,10 @@ class Checklist {
       projectId: json['project_id'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      subChecklists: (json['sub_checklists'] as List)
-          .map((i) => SubChecklist.fromJson(i))
-          .toList(),
+      subChecklists: (json['sub_checklists'] as List?)
+              ?.map((i) => SubChecklist.fromJson(i))
+              .toList() ??
+          [],
     );
   }
 }
