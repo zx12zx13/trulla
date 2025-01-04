@@ -28,6 +28,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   final TimeOfDay _selectedTime = TimeOfDay.now();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  final TextEditingController _judulController = TextEditingController();
 
   // Updated color scheme to match theme
   final Color primaryColor = const Color(0xFF4E6AF3);
@@ -675,10 +676,15 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                           width: 1,
                         ),
                       ),
-                      child: Icon(
-                        Icons.edit_outlined,
-                        color: textColor,
-                        size: 20,
+                      child: InkWell(
+                        onTap: () {
+                          showUpdateCheckboxDialog(checklist.id, context);
+                        },
+                        child: Icon(
+                          Icons.edit_outlined,
+                          color: textColor,
+                          size: 20,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -955,6 +961,85 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           ],
         ),
       ),
+    );
+  }
+
+  void showUpdateCheckboxDialog(int checklistId, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Consumer<DetailProjectProvider>(
+          builder: (context, provider, child) {
+            final checklist = provider.project?.checklists
+                .firstWhere((checklist) => checklist.id == checklistId);
+
+            _judulController.text = checklist?.judul ?? '';
+            return AlertDialog(
+              backgroundColor: const Color(0xFF242938),
+              title: const Text(
+                'Update Checklist',
+                style: TextStyle(color: Colors.white),
+              ),
+              content: StatefulBuilder(
+                builder: (context, setState) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: _judulController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Update list name',
+                            hintStyle: TextStyle(
+                              color: Colors.white.withOpacity(0.6),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.3)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final judul = _judulController.text.trim();
+
+                    if (judul.isNotEmpty) {
+                      await provider.updateChecklist(
+                        checklistId,
+                        judul,
+                        context,
+                      );
+                      Navigator.pop(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2196F3),
+                  ),
+                  child: provider.isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text('Update'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

@@ -101,9 +101,12 @@ class DetailProjectProvider extends ChangeNotifier {
     }
     setLoading(true);
     ApiResponse response = await _apiService.postRequest(
-        '/project/${_project!.id}/updateDeskripsi',
-        {'deskripsi': deskripsi},
-        context);
+      '/project/${_project!.id}/updateDeskripsi',
+      {
+        'deskripsi': deskripsi,
+      },
+      context,
+    );
 
     setLoading(false);
 
@@ -129,6 +132,31 @@ class DetailProjectProvider extends ChangeNotifier {
     }
 
     _project!.checklists.removeWhere((checklist) => checklist.id == id);
+    notifyListeners();
+  }
+
+  // update checklist
+  Future<void> updateChecklist(
+      int id, String judul, BuildContext context) async {
+    if (_project == null) {
+      return;
+    }
+    setLoading(true);
+    ApiResponse response = await _apiService.postRequest(
+      '/project/update_checklist/$id',
+      {
+        'judul': judul,
+      },
+      context,
+    );
+    setLoading(false);
+
+    if (response.statusCode != 200) {
+      return;
+    }
+
+    _project!.checklists.firstWhere((checklist) => checklist.id == id).judul =
+        judul;
     notifyListeners();
   }
 }

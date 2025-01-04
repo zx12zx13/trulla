@@ -4,23 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trulla/providers/navigation/detail_project_provider.dart';
 
-class AddCheckboxFAB extends StatefulWidget {
-  const AddCheckboxFAB({
+class UpdateCheckboxFAB extends StatefulWidget {
+  const UpdateCheckboxFAB({
     super.key,
+    required this.checklistId,
   });
 
+  final int checklistId;
+
   @override
-  State<AddCheckboxFAB> createState() => _AddCheckboxFABState();
+  State<UpdateCheckboxFAB> createState() => _UpdateCheckboxFABState();
 }
 
-class _AddCheckboxFABState extends State<AddCheckboxFAB> {
+class _UpdateCheckboxFABState extends State<UpdateCheckboxFAB> {
   final judulController = TextEditingController();
 
-  Future<void> addChecklist() async {
+  Future<void> updateChecklist() async {
     final judul = judulController.text.trim();
 
+    print('Updating: $judul');
+
     if (judul.isNotEmpty) {
-      await context.read<DetailProjectProvider>().addChecklist(
+      await context.read<DetailProjectProvider>().updateChecklist(
+            widget.checklistId,
             judul,
             context,
           );
@@ -38,13 +44,13 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
       width: 60, // Menyamakan ukuran container
       margin: const EdgeInsets.only(right: 8),
       child: FloatingActionButton(
-        heroTag: 'addChecklist',
+        heroTag: 'updateChecklist',
         backgroundColor: const Color(0xFF2196F3),
         elevation: 4,
         highlightElevation: 8,
-        onPressed: () => showAddCheckboxDialog(context),
+        onPressed: () => showUpdateCheckboxDialog(context),
         child: const Icon(
-          Icons.add,
+          Icons.edit,
           size: 30, // Menyamakan ukuran icon
           color: Colors.white,
         ),
@@ -52,16 +58,20 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
     );
   }
 
-  void showAddCheckboxDialog(BuildContext context) {
+  void showUpdateCheckboxDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return Consumer<DetailProjectProvider>(
           builder: (context, provider, child) {
+            final checklist = provider.project?.checklists
+                .firstWhere((checklist) => checklist.id == widget.checklistId);
+
+            judulController.text = checklist?.judul ?? '';
             return AlertDialog(
               backgroundColor: const Color(0xFF242938),
               title: const Text(
-                'Add a Checklist',
+                'Update Checklist',
                 style: TextStyle(color: Colors.white),
               ),
               content: StatefulBuilder(
@@ -75,7 +85,7 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
                           controller: judulController,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            hintText: 'Name a list',
+                            hintText: 'Update list name',
                             hintStyle: TextStyle(
                               color: Colors.white.withOpacity(0.6),
                             ),
@@ -100,13 +110,13 @@ class _AddCheckboxFABState extends State<AddCheckboxFAB> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: addChecklist,
+                  onPressed: updateChecklist,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2196F3),
                   ),
                   child: provider.isLoading
                       ? const CircularProgressIndicator()
-                      : const Text('Save'),
+                      : const Text('Update'),
                 ),
               ],
             );
