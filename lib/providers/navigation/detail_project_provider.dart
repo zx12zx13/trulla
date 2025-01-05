@@ -57,6 +57,33 @@ class DetailProjectProvider extends ChangeNotifier {
     return response;
   }
 
+  Future<void> addSubChecklist(
+      int id, String judul, BuildContext context) async {
+    if (_project == null) {
+      return;
+    }
+
+    ApiResponse response = await _apiService.postRequest(
+      '/project/add_sub_checklist/$id',
+      {
+        'text': judul,
+      },
+      context,
+    );
+
+    print(response.data);
+
+    if (response.statusCode == 201) {
+      SubChecklist newSubChecklist =
+          SubChecklist.fromJson(response.data['data']);
+      _project!.checklists
+          .firstWhere((checklist) => checklist.id == id)
+          .subChecklists
+          .add(newSubChecklist);
+      notifyListeners();
+    }
+  }
+
   Future<bool> updateSubChecklist(
       int id, bool value, BuildContext context) async {
     if (_project == null) {

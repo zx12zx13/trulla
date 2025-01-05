@@ -11,23 +11,25 @@ class Project {
   int? teamId;
   int userId;
   List<Checklist> checklists;
-  // completedChecklists;
 
   int get completedChecklists {
     int count = 0;
     for (var i = 0; i < checklists.length; i++) {
-      if (checklists[i].completedSubChecklists ==
-          checklists[i].subChecklists.length) {
+      if (checklists[i].subChecklists.isNotEmpty &&
+          checklists[i].completedSubChecklists ==
+              checklists[i].subChecklists.length) {
         count++;
       }
     }
+
     return count;
   }
 
   double get progress {
-    return checklists.isEmpty
-        ? 0.0 // Mengembalikan nilai default jika checklists kosong
-        : (completedChecklists / checklists.length);
+    double rawProgress =
+        checklists.isEmpty ? 0.0 : (completedChecklists / checklists.length);
+    return double.parse(
+        rawProgress.toStringAsFixed(1)); // Limit to 1 decimal place
   }
 
   // Example: 04 January 2025, 18:00
@@ -90,9 +92,11 @@ class Checklist {
       subChecklists.where((sub) => sub.completed == 1).length;
 
   double get progress {
-    return subChecklists.isEmpty
-        ? 0.0 // Mengembalikan nilai default jika subChecklists kosong
+    double rawProgress = subChecklists.isEmpty
+        ? 0.0 // Default if subChecklists is empty
         : (completedSubChecklists / subChecklists.length);
+    return double.parse(
+        rawProgress.toStringAsFixed(1)); // Limit to 1 decimal place
   }
 
   Checklist({
@@ -140,7 +144,7 @@ class SubChecklist {
     return SubChecklist(
       id: json['id'],
       text: json['text'],
-      completed: json['completed'],
+      completed: json['completed'] ?? 0,
       checklistId: json['checklist_id'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),

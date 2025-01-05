@@ -29,6 +29,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   final TextEditingController _judulController = TextEditingController();
+  final TextEditingController _subChecklistController = TextEditingController();
 
   // Updated color scheme to match theme
   final Color primaryColor = const Color(0xFF4E6AF3);
@@ -267,7 +268,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
               children: [
                 _buildProjectStat(
                   'Progress',
-                  '${widget.projectData.progress * 100}%',
+                  '${(context.watch<DetailProjectProvider>().project?.progress ?? 0) * 100}%',
                   Colors.white,
                 ),
                 // _buildProjectStat(
@@ -833,7 +834,15 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  // show dialog to add sub checklist
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return _addSubChecklistDialog(checklist.id);
+                    },
+                  );
+                },
                 icon: Icon(
                   Icons.add_circle_outline,
                   color: primaryColor,
@@ -857,6 +866,37 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
           ],
         ),
       ),
+    );
+  }
+
+  Widget _addSubChecklistDialog(int checklistId) {
+    return AlertDialog(
+      title: const Text('Add a List'),
+      content: TextField(
+        controller: _subChecklistController,
+        decoration: InputDecoration(
+          hintText: 'Enter a list name',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        TextButton(
+          child: const Text('Add'),
+          onPressed: () async {
+            await context.read<DetailProjectProvider>().addSubChecklist(
+                checklistId, _subChecklistController.text, context);
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 
