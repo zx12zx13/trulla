@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trulla/providers/auth/edit_profil_provider.dart';
 import 'package:trulla/providers/auth/login_provider.dart';
 import 'package:trulla/providers/auth/register_provider.dart';
+import 'package:trulla/providers/navigation/detail_project_provider.dart';
 import 'package:trulla/providers/navigation/project_provider.dart';
 import 'widget/navbar.dart';
 import 'pages/opening/welcome_page.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => RegisterProvider()),
         ChangeNotifierProvider(create: (context) => ProjectProvider()),
         ChangeNotifierProvider(create: (context) => EditProfilProvider()),
+        ChangeNotifierProvider(create: (context) => DetailProjectProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

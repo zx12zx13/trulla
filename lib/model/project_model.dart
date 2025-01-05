@@ -1,15 +1,54 @@
+import 'package:intl/intl.dart';
+
 class Project {
-  final int id;
-  final String judul;
-  final String deskripsi;
-  final DateTime deadline;
-  final String status;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int? teamId;
-  final int userId;
-  final int completedChecklists;
-  final List<Checklist> checklists;
+  int id;
+  String judul;
+  String deskripsi;
+  DateTime deadline;
+  String status;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int? teamId;
+  int userId;
+  List<Checklist> checklists;
+
+  int get completedChecklists {
+    int count = 0;
+    for (var i = 0; i < checklists.length; i++) {
+      if (checklists[i].subChecklists.isNotEmpty &&
+          checklists[i].completedSubChecklists ==
+              checklists[i].subChecklists.length) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  double get progress {
+    double rawProgress =
+        checklists.isEmpty ? 0.0 : (completedChecklists / checklists.length);
+    return double.parse(
+        rawProgress.toStringAsFixed(1)); // Limit to 1 decimal place
+  }
+
+  // Example: 04 January 2025, 18:00
+  String get formattedDeadline {
+    return DateFormat('dd MMMM yyyy, HH:mm').format(deadline);
+  }
+
+  String get statusText {
+    switch (status) {
+      case 'ongoing':
+        return 'Ongoing';
+      case 'completed':
+        return 'Completed';
+      case 'canceled':
+        return 'Canceled';
+      default:
+        return 'Ongoing';
+    }
+  }
 
   Project({
     required this.id,
@@ -21,7 +60,6 @@ class Project {
     required this.updatedAt,
     this.teamId,
     required this.userId,
-    required this.completedChecklists,
     required this.checklists,
   });
 
@@ -36,7 +74,6 @@ class Project {
       updatedAt: DateTime.parse(json['updated_at']),
       teamId: json['team_id'],
       userId: json['user_id'],
-      completedChecklists: json['completed_checklists'],
       checklists: (json['checklists'] as List)
           .map((i) => Checklist.fromJson(i))
           .toList(),
@@ -45,12 +82,22 @@ class Project {
 }
 
 class Checklist {
-  final int id;
-  final String judul;
-  final int projectId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final List<SubChecklist> subChecklists;
+  int id;
+  String judul;
+  int projectId;
+  DateTime createdAt;
+  DateTime updatedAt;
+  List<SubChecklist> subChecklists;
+  int get completedSubChecklists =>
+      subChecklists.where((sub) => sub.completed == 1).length;
+
+  double get progress {
+    double rawProgress = subChecklists.isEmpty
+        ? 0.0 // Default if subChecklists is empty
+        : (completedSubChecklists / subChecklists.length);
+    return double.parse(
+        rawProgress.toStringAsFixed(1)); // Limit to 1 decimal place
+  }
 
   Checklist({
     required this.id,
@@ -68,20 +115,21 @@ class Checklist {
       projectId: json['project_id'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      subChecklists: (json['sub_checklists'] as List)
-          .map((i) => SubChecklist.fromJson(i))
-          .toList(),
+      subChecklists: (json['sub_checklists'] as List?)
+              ?.map((i) => SubChecklist.fromJson(i))
+              .toList() ??
+          [],
     );
   }
 }
 
 class SubChecklist {
-  final int id;
-  final String text;
-  final int completed;
-  final int checklistId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  int id;
+  String text;
+  int completed;
+  int checklistId;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   SubChecklist({
     required this.id,
@@ -96,7 +144,7 @@ class SubChecklist {
     return SubChecklist(
       id: json['id'],
       text: json['text'],
-      completed: json['completed'],
+      completed: json['completed'] ?? 0,
       checklistId: json['checklist_id'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),

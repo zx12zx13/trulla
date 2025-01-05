@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage>
   void _filterProjects(String query) {
     setState(() {
       List<Map<String, dynamic>> results = query.isEmpty
-          ? List<Map<String, dynamic>>.from(projectsData)
+          ? projectsData
           : projectsData
               .where((project) =>
                   project['title']
@@ -307,77 +307,77 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildTabRow() {
-    return Container(
-      height: 45,
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          _buildTab('All', 0, Icons.grid_view_rounded),
-          _buildTab('On Going', 1, Icons.timer_outlined),
-          _buildTab('Completed', 2, Icons.check_circle_outline_rounded),
-          _buildTab('Canceled', 3, Icons.cancel_outlined),
-        ],
-      ),
-    );
-  }
+  // Widget _buildTabRow() {
+  //   return Container(
+  //     height: 45,
+  //     margin: const EdgeInsets.symmetric(vertical: 16),
+  //     child: ListView(
+  //       scrollDirection: Axis.horizontal,
+  //       physics: const BouncingScrollPhysics(),
+  //       children: [
+  //         _buildTab('All', 0, Icons.grid_view_rounded),
+  //         _buildTab('On Going', 1, Icons.timer_outlined),
+  //         _buildTab('Completed', 2, Icons.check_circle_outline_rounded),
+  //         _buildTab('Canceled', 3, Icons.cancel_outlined),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildTab(String text, int index, IconData icon) {
-    final isSelected = _selectedIndex == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-          _filterProjects(_searchController.text);
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.only(right: 12),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [primaryColor, accentColor],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          color: isSelected ? null : surfaceColor,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: primaryColor.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                color:
-                    isSelected ? Colors.white : Colors.white.withOpacity(0.7),
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildTab(String text, int index, IconData icon) {
+  //   final isSelected = _selectedIndex == index;
+  //   return GestureDetector(
+  //     onTap: () {
+  //       setState(() {
+  //         _selectedIndex = index;
+  //         _filterProjects(_searchController.text);
+  //       });
+  //     },
+  //     child: Container(
+  //       margin: const EdgeInsets.only(right: 12),
+  //       padding: const EdgeInsets.symmetric(horizontal: 16),
+  //       decoration: BoxDecoration(
+  //         gradient: isSelected
+  //             ? LinearGradient(
+  //                 colors: [primaryColor, accentColor],
+  //                 begin: Alignment.topLeft,
+  //                 end: Alignment.bottomRight,
+  //               )
+  //             : null,
+  //         color: isSelected ? null : surfaceColor,
+  //         borderRadius: BorderRadius.circular(22),
+  //         boxShadow: isSelected
+  //             ? [
+  //                 BoxShadow(
+  //                   color: primaryColor.withOpacity(0.3),
+  //                   blurRadius: 8,
+  //                   offset: const Offset(0, 2),
+  //                 ),
+  //               ]
+  //             : null,
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Icon(
+  //             icon,
+  //             size: 18,
+  //             color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+  //           ),
+  //           const SizedBox(width: 8),
+  //           Text(
+  //             text,
+  //             style: TextStyle(
+  //               color:
+  //                   isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+  //               fontSize: 14,
+  //               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   AppBar buildAppBar() {
     if (_isSearching) {
@@ -495,274 +495,274 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildProjectCard(Map<String, dynamic> project) {
-    Color statusColor;
-    IconData statusIcon;
+  // Widget _buildProjectCard(Map<String, dynamic> project) {
+  //   Color statusColor;
+  //   IconData statusIcon;
 
-    switch (project['status']) {
-      case 'ongoing':
-        statusColor = primaryColor;
-        statusIcon = Icons.timer;
-        break;
-      case 'completed':
-        statusColor = const Color(0xFF4CAF50);
-        statusIcon = Icons.check_circle;
-        break;
-      case 'cancelled':
-        statusColor = const Color(0xFFFF5252);
-        statusIcon = Icons.cancel;
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusIcon = Icons.help;
-    }
+  //   switch (project['status']) {
+  //     case 'ongoing':
+  //       statusColor = primaryColor;
+  //       statusIcon = Icons.timer;
+  //       break;
+  //     case 'completed':
+  //       statusColor = const Color(0xFF4CAF50);
+  //       statusIcon = Icons.check_circle;
+  //       break;
+  //     case 'cancelled':
+  //       statusColor = const Color(0xFFFF5252);
+  //       statusIcon = Icons.cancel;
+  //       break;
+  //     default:
+  //       statusColor = Colors.grey;
+  //       statusIcon = Icons.help;
+  //   }
 
-    final daysUntilDeadline =
-        project['deadline'].difference(DateTime.now()).inDays;
-    final isNearDeadline = daysUntilDeadline <= 1;
+  //   final daysUntilDeadline =
+  //       project['deadline'].difference(DateTime.now()).inDays;
+  //   final isNearDeadline = daysUntilDeadline <= 1;
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 500),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  surfaceColor,
-                  surfaceColor.withOpacity(0.95),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: isNearDeadline
-                  ? Border.all(color: const Color(0xFFFF5252), width: 2)
-                  : Border.all(
-                      color: statusColor.withOpacity(0.2),
-                      width: 1,
-                    ),
-              boxShadow: [
-                BoxShadow(
-                  color: statusColor.withOpacity(0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            project['title'],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            project['description'],
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 14,
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Icon(
-                        statusIcon,
-                        color: statusColor,
-                        size: 24,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Progress',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                '${(project['progress'] * 100).toInt()}%',
-                                style: TextStyle(
-                                  color: statusColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                    color: statusColor.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                ),
-                                FractionallySizedBox(
-                                  widthFactor: project['progress'].toDouble(),
-                                  child: Container(
-                                    height: 6,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          statusColor,
-                                          statusColor.withOpacity(0.8)
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: primaryColor.withOpacity(0.2),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_rounded,
-                            size: 16,
-                            color: isNearDeadline
-                                ? const Color(0xFFFF5252)
-                                : primaryColor,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '$daysUntilDeadline Days',
-                            style: TextStyle(
-                              color: isNearDeadline
-                                  ? const Color(0xFFFF5252)
-                                  : primaryColor,
-                              fontSize: 13,
-                              fontWeight: isNearDeadline
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: accentColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.more_horiz,
-                            color: accentColor,
-                            size: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: (project['tags'] as List<String>)
-                      .map((tag) => Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  accentColor.withOpacity(0.2),
-                                  primaryColor.withOpacity(0.2),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              tag,
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //   return TweenAnimationBuilder<double>(
+  //     tween: Tween(begin: 0.0, end: 1.0),
+  //     duration: const Duration(milliseconds: 500),
+  //     builder: (context, value, child) {
+  //       return Transform.scale(
+  //         scale: value,
+  //         child: Container(
+  //           padding: const EdgeInsets.all(20),
+  //           margin: const EdgeInsets.only(bottom: 16),
+  //           decoration: BoxDecoration(
+  //             gradient: LinearGradient(
+  //               colors: [
+  //                 surfaceColor,
+  //                 surfaceColor.withOpacity(0.95),
+  //               ],
+  //               begin: Alignment.topLeft,
+  //               end: Alignment.bottomRight,
+  //             ),
+  //             borderRadius: BorderRadius.circular(20),
+  //             border: isNearDeadline
+  //                 ? Border.all(color: const Color(0xFFFF5252), width: 2)
+  //                 : Border.all(
+  //                     color: statusColor.withOpacity(0.2),
+  //                     width: 1,
+  //                   ),
+  //             boxShadow: [
+  //               BoxShadow(
+  //                 color: statusColor.withOpacity(0.1),
+  //                 blurRadius: 12,
+  //                 offset: const Offset(0, 4),
+  //               ),
+  //             ],
+  //           ),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Expanded(
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text(
+  //                           project['title'],
+  //                           style: const TextStyle(
+  //                             color: Colors.white,
+  //                             fontSize: 20,
+  //                             fontWeight: FontWeight.w600,
+  //                             letterSpacing: 0.5,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(height: 8),
+  //                         Text(
+  //                           project['description'],
+  //                           style: TextStyle(
+  //                             color: Colors.white.withOpacity(0.7),
+  //                             fontSize: 14,
+  //                             letterSpacing: 0.3,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                     padding: const EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       color: statusColor.withOpacity(0.1),
+  //                       borderRadius: BorderRadius.circular(14),
+  //                     ),
+  //                     child: Icon(
+  //                       statusIcon,
+  //                       color: statusColor,
+  //                       size: 24,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 20),
+  //               Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Row(
+  //                           children: [
+  //                             Text(
+  //                               'Progress',
+  //                               style: TextStyle(
+  //                                 color: Colors.white.withOpacity(0.9),
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.w500,
+  //                               ),
+  //                             ),
+  //                             const Spacer(),
+  //                             Text(
+  //                               '${(project['progress'] * 100).toInt()}%',
+  //                               style: TextStyle(
+  //                                 color: statusColor,
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.w600,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         const SizedBox(height: 8),
+  //                         ClipRRect(
+  //                           borderRadius: BorderRadius.circular(6),
+  //                           child: Stack(
+  //                             children: [
+  //                               Container(
+  //                                 height: 6,
+  //                                 decoration: BoxDecoration(
+  //                                   color: statusColor.withOpacity(0.2),
+  //                                   borderRadius: BorderRadius.circular(6),
+  //                                 ),
+  //                               ),
+  //                               FractionallySizedBox(
+  //                                 widthFactor: project['progress'].toDouble(),
+  //                                 child: Container(
+  //                                   height: 6,
+  //                                   decoration: BoxDecoration(
+  //                                     gradient: LinearGradient(
+  //                                       colors: [
+  //                                         statusColor,
+  //                                         statusColor.withOpacity(0.8)
+  //                                       ],
+  //                                       begin: Alignment.centerLeft,
+  //                                       end: Alignment.centerRight,
+  //                                     ),
+  //                                     borderRadius: BorderRadius.circular(6),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 20),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                         horizontal: 12, vertical: 6),
+  //                     decoration: BoxDecoration(
+  //                       color: primaryColor.withOpacity(0.1),
+  //                       borderRadius: BorderRadius.circular(20),
+  //                       border: Border.all(
+  //                         color: primaryColor.withOpacity(0.2),
+  //                         width: 1,
+  //                       ),
+  //                     ),
+  //                     child: Row(
+  //                       children: [
+  //                         Icon(
+  //                           Icons.calendar_today_rounded,
+  //                           size: 16,
+  //                           color: isNearDeadline
+  //                               ? const Color(0xFFFF5252)
+  //                               : primaryColor,
+  //                         ),
+  //                         const SizedBox(width: 6),
+  //                         Text(
+  //                           '$daysUntilDeadline Days',
+  //                           style: TextStyle(
+  //                             color: isNearDeadline
+  //                                 ? const Color(0xFFFF5252)
+  //                                 : primaryColor,
+  //                             fontSize: 13,
+  //                             fontWeight: isNearDeadline
+  //                                 ? FontWeight.w600
+  //                                 : FontWeight.w500,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Container(
+  //                         padding: const EdgeInsets.all(8),
+  //                         decoration: BoxDecoration(
+  //                           color: accentColor.withOpacity(0.1),
+  //                           borderRadius: BorderRadius.circular(12),
+  //                         ),
+  //                         child: Icon(
+  //                           Icons.more_horiz,
+  //                           color: accentColor,
+  //                           size: 20,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Wrap(
+  //                 spacing: 8,
+  //                 runSpacing: 8,
+  //                 children: (project['tags'] as List<String>)
+  //                     .map((tag) => Container(
+  //                           padding: const EdgeInsets.symmetric(
+  //                               horizontal: 12, vertical: 6),
+  //                           decoration: BoxDecoration(
+  //                             gradient: LinearGradient(
+  //                               colors: [
+  //                                 accentColor.withOpacity(0.2),
+  //                                 primaryColor.withOpacity(0.2),
+  //                               ],
+  //                               begin: Alignment.topLeft,
+  //                               end: Alignment.bottomRight,
+  //                             ),
+  //                             borderRadius: BorderRadius.circular(12),
+  //                             border: Border.all(
+  //                               color: accentColor.withOpacity(0.2),
+  //                               width: 1,
+  //                             ),
+  //                           ),
+  //                           child: Text(
+  //                             tag,
+  //                             style: TextStyle(
+  //                               color: Colors.white.withOpacity(0.9),
+  //                               fontSize: 12,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                         ))
+  //                     .toList(),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   void _showNotifications() {
     showModalBottomSheet(
@@ -827,43 +827,43 @@ class _HomePageState extends State<HomePage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildGreeting(),
-                      _buildTabRow(),
-                      ...filteredProjects
-                          .map((project) => _buildProjectCard(project)),
-                      if (filteredProjects.isEmpty)
-                        Center(
-                          child: Container(
-                            margin: const EdgeInsets.all(30),
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: surfaceColor,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.search_off_rounded,
-                                  color: Colors.white.withOpacity(0.5),
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Tidak ada proyek yang ditemukan',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      // _buildTabRow(),
+                      // ...filteredProjects
+                      //     .map((project) => _buildProjectCard(project)),
+                      // if (filteredProjects.isEmpty)
+                      //   Center(
+                      //     child: Container(
+                      //       margin: const EdgeInsets.all(30),
+                      //       padding: const EdgeInsets.all(20),
+                      //       decoration: BoxDecoration(
+                      //         color: surfaceColor,
+                      //         borderRadius: BorderRadius.circular(16),
+                      //         border: Border.all(
+                      //           color: accentColor.withOpacity(0.2),
+                      //           width: 1,
+                      //         ),
+                      //       ),
+                      //       child: Column(
+                      //         children: [
+                      //           Icon(
+                      //             Icons.search_off_rounded,
+                      //             color: Colors.white.withOpacity(0.5),
+                      //             size: 48,
+                      //           ),
+                      //           const SizedBox(height: 16),
+                      //           Text(
+                      //             'Tidak ada proyek yang ditemukan',
+                      //             textAlign: TextAlign.center,
+                      //             style: TextStyle(
+                      //               color: Colors.white.withOpacity(0.7),
+                      //               fontSize: 16,
+                      //               fontWeight: FontWeight.w500,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
                       const QuoteFooter(),
                     ],
                   ),
@@ -886,13 +886,7 @@ class _HomePageState extends State<HomePage>
               },
             ),
             const SizedBox(height: 10),
-            ProjectFAB(
-              onPressed: () {
-                setState(() {
-                  // Project creation logic will be handled in ProjectFAB
-                });
-              },
-            ),
+            const ProjectFAB(),
           ],
         ),
       ),

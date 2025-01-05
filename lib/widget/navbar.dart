@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import '../pages/homepage/home_page.dart';
 import '../pages/profile/profile.dart';
 // import '../pages/group/view-group-team.dart';
 import '../pages/project/project-page.dart';
@@ -18,7 +17,7 @@ class _NavBarControllerState extends State<NavBarController> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(),
+    // const HomePage(),
     const ProjectPage(),
     // const ListTeamPage(),
     const ProfilePage(),
@@ -54,19 +53,19 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleNavBar(
       activeIcons: const [
-        Icon(Icons.home_filled, color: Color(0xFF1A1A1A)),
+        // Icon(Icons.home_filled, color: Color(0xFF1A1A1A)),
         Icon(Icons.tag, color: Color(0xFF1A1A1A)),
         // Icon(Icons.groups, color: Color(0xFF1A1A1A)),
         Icon(Icons.person, color: Color(0xFF1A1A1A)),
       ],
       inactiveIcons: const [
-        Text(
-          "Home",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white70,
-          ),
-        ),
+        // Text(
+        //   "Home",
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //     color: Colors.white70,
+        //   ),
+        // ),
         Text(
           "Project",
           style: TextStyle(

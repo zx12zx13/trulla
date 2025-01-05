@@ -67,6 +67,7 @@ class EditProfilProvider extends ChangeNotifier {
           // update shared preferences
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('name', name);
+          this.name = name;
         }
         onSuccess();
       } else {
