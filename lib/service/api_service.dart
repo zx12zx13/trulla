@@ -6,7 +6,7 @@ import 'package:trulla/utils/api_response.dart';
 import 'package:trulla/pages/opening/login_page.dart';
 
 class ApiService {
-  String baseUrl = "http://10.0.2.2:8000/api";
+  String baseUrl = "https://mcc4-cs.undiksha.ac.id/api";
 
   Future<ApiResponse> getRequest(String endpoint, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

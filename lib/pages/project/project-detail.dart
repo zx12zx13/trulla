@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:trulla/model/project_model.dart';
 import 'package:trulla/providers/navigation/detail_project_provider.dart';
 import 'package:trulla/widget/fab1/add_checkbox_fab.dart';
-import 'package:trulla/widget/fab1/add_note_fab.dart';
+// import 'package:trulla/widget/fab1/add_note_fab.dart';
 
 class ProjectDetailPage extends StatefulWidget {
   final Project projectData;
@@ -123,7 +123,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         ),
       ),
       floatingActionButton:
-          _selectedIndex == 0 ? const AddCheckboxFAB() : const AddNoteFAB(),
+          _selectedIndex == 0 ? const AddCheckboxFAB() : null,
     );
   }
 
@@ -327,8 +327,8 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         physics: const BouncingScrollPhysics(),
         children: [
           _buildTab(0, Icons.edit_note, 'Edit'),
-          const SizedBox(width: 12),
-          _buildTab(1, Icons.print_outlined, 'Notes'),
+          // const SizedBox(width: 12),
+          // _buildTab(1, Icons.print_outlined, 'Notes'),
           // const SizedBox(width: 12),
           // _buildTab(2, Icons.folder_outlined, 'File'),
         ],
